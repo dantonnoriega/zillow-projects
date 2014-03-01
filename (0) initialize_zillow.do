@@ -67,18 +67,24 @@ foreach dataset in "data_wo_descriptions" ///
 	
 }
 
-*
+* sort data and check for obvious duplicates
 sort propertyattributetypeid propertyattributetypedisplayname attributevalue propertyid	
+duplicates drop // drop any duplicate obs
 save "data sets/zillow_stacked", replace
 
 
 * merge data, drop problem ids, then reshape
 use "data sets/zillow_stacked", clear
-merge m:1 propertyid using "data sets/zillow_property_list", nogen
-merge m:1 propertyid using "data sets/list_of_removed_properties", nogen
+merge m:1 propertyid using "data sets/list_of_removed_properties", nogen // tag the problem ids
 drop if inputerror == 1 // drop the nonunique/input error properties
 drop inputerror // drop the input error variable
+
+merge m:1 propertyid using "data sets/zillow_property_list" // merge property addresses
+drop if _merge == 1 // drop properties that have no known address (there are useless)
+drop _merge
+
 sort propertyattributetypeid propertyattributetypedisplayname attributevalue propertyid
+
 
 * rename variables
 rename propertyid pid
@@ -90,6 +96,12 @@ label variable pid "Property ID"
 label variable atype "property Attribute TYPE id"
 label variable aname "property Attribute type display NAME"
 label variable avalue "Attribute VALUE"
+
+tempfile hold
+save `hold', replace
+
+* final duplicates check
+duplicates drop
 
 save "data sets/zillow_stacked_merged", replace
 

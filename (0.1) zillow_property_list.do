@@ -152,5 +152,10 @@ save "data sets/list_of_removed_properties", replace
 * now we stack the final, complete list.
 use `hold3', clear
 append using `unqids'
+
+* final duplicates check
+duplicates drop
+
+* save
 save "data sets/zillow_property_list", replace
 
