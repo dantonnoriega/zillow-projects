@@ -8,4 +8,4 @@ global dir "D:/Dan's Workspace/Zillow/"
 cd "$dir"
 
 do "$github/(0) initialize_zillow.do"
-*do "$github/(1) zillow_trimdown.do"
+do "$github/(1) zillow_trimdown.do"

@@ -70,11 +70,12 @@ foreach dataset in "data_wo_descriptions" ///
 * sort data and check for obvious duplicates
 sort propertyattributetypeid propertyattributetypedisplayname attributevalue propertyid	
 duplicates drop // drop any duplicate obs
-save "data sets/zillow_stacked", replace
+tempfile hold
+save `hold', replace
 
 
 * merge data, drop problem ids, then reshape
-use "data sets/zillow_stacked", clear
+use `hold', clear
 merge m:1 propertyid using "data sets/list_of_removed_properties", nogen // tag the problem ids
 drop if inputerror == 1 // drop the nonunique/input error properties
 drop inputerror // drop the input error variable
@@ -91,14 +92,13 @@ rename propertyid pid
 rename propertyattributetypeid atype
 rename propertyattributetypedisplayname aname
 rename attributevalue avalue
+rename sellingpricedollarcnt sellprice
 
 label variable pid "Property ID"
 label variable atype "property Attribute TYPE id"
 label variable aname "property Attribute type display NAME"
 label variable avalue "Attribute VALUE"
 
-tempfile hold
-save `hold', replace
 
 * final duplicates check
 duplicates drop

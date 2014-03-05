@@ -15,9 +15,10 @@ use "D:\Dan's Workspace\Zillow\data sets\data_wo_descriptions.dta", clear
 **** (1)	
 clear programs
 do "D:\Dan's Workspace\GitHub Repository\zillow_projects/removesym.ado"
-keep propertyid housenumber streetname streetsuffix unitnumber ///
+keep propertyid sellingpricedollarcnt housenumber street* unit* ///
 	city state postalcode zipplusfour
-removesym streetsuffix postalcode unitnumber, blanks sym(. -)
+removesym postalcode unitnumber, blanks sym(. -)
+removesym streetname streetdirectionsuffix streetdirectionprefix streetsuffix, allsym numbers
 replace postalcode = "0" + postalcode if length(postalcode) == 4 //standardize 4 digit postalcodes (missing leading zero)
 duplicates drop // drop any duplicates using ALL variables
 
