@@ -1,3 +1,4 @@
+* (0.1) zillow_property_list.do
 * this program is used to make a unique property list
 * this is done by doing the following...
 *	(1) removing duplicate properties
@@ -8,7 +9,7 @@
 *clear all
 set more off
 pause off
-use "D:\Dan's Workspace\Zillow\data sets\data_wo_descriptions.dta", clear
+use "D:\Dan's Workspace\Zillow\data\data_wo_descriptions.dta", clear
 
 
 
@@ -64,7 +65,7 @@ save `hold2', replace // save small subset of houses
 append using `hold1' // append the totally unique houses
 drop tag
 
-save "data sets/zillow_property_list", replace
+save "data/zillow_property_list", replace
 
 
 
@@ -72,7 +73,7 @@ save "data sets/zillow_property_list", replace
 /* the key to all these codes is that we NEVER drop an observation unless we
 	can GUARANTEE that there is a DUPLICATE. thus, we don't lose the property ID. */
 * keep totally unique ids
-use "data sets/zillow_property_list", clear
+use "data/zillow_property_list", clear
 duplicates tag propertyid, gen(tag)
 drop if tag > 0
 drop tag
@@ -81,7 +82,7 @@ save `unqids', replace // save unique ids
 pause
 
 * narrow down to duplicate propertyid
-use "data sets/zillow_property_list", clear
+use "data/zillow_property_list", clear
 duplicates tag propertyid, gen(tag)
 drop if tag == 0 // this leaves us with ONLY duplicates
 drop tag
@@ -147,7 +148,7 @@ label variable inputerror "= 1 if property is suspected of input error"
 export excel using "spreadsheets/list of removed properties", firstrow(variables) replace //export problematic ids
 keep propertyid inputerror
 collapse (max) inputerror, by(propertyid)
-save "data sets/list_of_removed_properties", replace
+save "data/list_of_removed_properties", replace
 
 
 * now we stack the final, complete list.
@@ -158,5 +159,5 @@ append using `unqids'
 duplicates drop
 
 * save
-save "data sets/zillow_property_list", replace
+save "data/zillow_property_list", replace
 

@@ -15,8 +15,8 @@ local import_yn = 1 // toggle importing of data
 
 /* clear data sets and import */
 if (`import_yn' == 1) {
-	!rmdir "data sets" /s /q
-	!mkdir "data sets"
+	!rmdir "data" /s /q
+	!mkdir "data"
 	
 	foreach dataset in "data_wo_descriptions" ///
 	"data_fields72_75" ///
@@ -34,7 +34,7 @@ if (`import_yn' == 1) {
 				replace `var' = trim(`var')
 			}
 		
-		save "data sets/`dataset'", replace
+		save "data/`dataset'", replace
 		}
 	}
 }
@@ -52,15 +52,15 @@ foreach dataset in "data_wo_descriptions" ///
 	}
 	
 	if (`k' == 1) {
-		use "data sets/`dataset'", clear
+		use "data/`dataset'", clear
 		keep propertyid attributevalue propertyattributetypedisplayname propertyattributetypeid
-		save "data sets/zillow_stacked", replace
+		save "data/zillow_stacked", replace
 	}
 	else {	
-		use "data sets/`dataset'", clear
+		use "data/`dataset'", clear
 		keep propertyid attributevalue propertyattributetypedisplayname propertyattributetypeid
-		append using "data sets/zillow_stacked"
-		save "data sets/zillow_stacked", replace
+		append using "data/zillow_stacked"
+		save "data/zillow_stacked", replace
 	}
 	
 	local k = `k' + 1
@@ -76,11 +76,11 @@ save `hold', replace
 
 * merge data, drop problem ids, then reshape
 use `hold', clear
-merge m:1 propertyid using "data sets/list_of_removed_properties", nogen // tag the problem ids
+merge m:1 propertyid using "data/list_of_removed_properties", nogen // tag the problem ids
 drop if inputerror == 1 // drop the nonunique/input error properties
 drop inputerror // drop the input error variable
 
-merge m:1 propertyid using "data sets/zillow_property_list" // merge property addresses
+merge m:1 propertyid using "data/zillow_property_list" // merge property addresses
 drop if _merge == 1 // drop properties that have no known address (there are useless)
 drop _merge
 
@@ -103,7 +103,7 @@ label variable avalue "Attribute VALUE"
 * final duplicates check
 duplicates drop
 
-save "data sets/zillow_stacked_merged", replace
+save "data/zillow_stacked_merged", replace
 
 
 

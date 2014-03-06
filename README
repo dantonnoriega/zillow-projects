@@ -2,5 +2,26 @@ Read Me for Zillow Project
 
 Codes
 
-(0) initialize_zillow
-	This file copies and then converts the data to Stata format.	
+(0) initialize_zillow.do
+* This .do file does the following:
+*	- makes a master list of property IDs with addresses etc
+* 	- stacks all the property attibute data and then merges the master property list
+
+(0.1) zillow_property_list.do
+* this program is used to make a unique property list
+* this is done by doing the following...
+*	(1) removing duplicate properties
+* 	(2) removing any spaces and extra symbols in "housenumber" and "streetsuffix"
+*	(3) isolating problematic properties. often there are non numbers in the numeric categories.
+*	(4) broaden criterion and refine again
+
+(1) zillow_trimdown.do
+* this code times down the zillow data to useable observations
+* 	(1) merge data with analysis table. we then remove unneeded variables. 
+*	(2) split data into numeric and string values
+*	(3) take the numeric data set and use it to tag unlikely single-family homes (SFH)
+
+zillow_76_to_text.do
+* this code does a quick clean of atype 76
+* 	(1) keep only atype 76. remove all non alpha-numeric characters. replaces with spaces.
+*	(2) export text file

@@ -1,3 +1,4 @@
+* (1) zillow_trimdown.do
 * this code times down the zillow data to useable observations
 * 	(1) merge data with analysis table. we then remove unneeded variables. 
 *	(2) split data into numeric and string values
@@ -15,10 +16,10 @@ cd "$dir"
 **** (1)
 import excel "$dir/spreadsheets/zillow variable analysis table.xlsx", clear sheet("Sheet1") firstrow case(lower)
 drop remove
-save "data sets/zillow_analysis_table", replace
+save "data/zillow_analysis_table", replace
 
-use "data sets/zillow_stacked_merged", clear
-merge m:1 atype using "data sets/zillow_analysis_table", nogen
+use "data/zillow_stacked_merged", clear
+merge m:1 atype using "data/zillow_analysis_table", nogen
 
 * keep "crucial" variables
 destring crucial, replace
@@ -64,20 +65,20 @@ merge m:1 pid atype using `tagged'	 // merge the list of problematic pid's
 drop if _merge == 3 					// drop them
 drop _merge
 
-save "data sets/zillow_numeric", replace
+save "data/zillow_numeric", replace
 
 use `hold', clear
 keep if destring == 0
 duplicates drop
 
-save "data sets/zillow_strings", replace
+save "data/zillow_strings", replace
 
 
 
 
 **** (3)
 * see /spreadsheets/zillow variable analysis table.xlsx for info
-use  "data sets/zillow_numeric", clear
+use  "data/zillow_numeric", clear
 
 gen tag = 0
 replace tag = 1 if avalue <=0
@@ -106,10 +107,10 @@ merge m:1 pid using `tagged1'
 drop if _merge == 3 // purge the set of unlikelies
 drop _merge tag
 
-save  "data sets/zillow_numeric_trimmed", replace
+save  "data/zillow_numeric_trimmed", replace
 
 * tabulate the data (less atype = 5 -- sq ft)
-use "data sets/zillow_numeric_trimmed", clear
+use "data/zillow_numeric_trimmed", clear
 log using "D:\Dan's Workspace\Zillow\spreadsheets\tab_by_atype_trimmed", text replace
 describe
 egen tag = tag(pid)
@@ -122,7 +123,7 @@ bysort atype: tab avalue
 log close
 
 * remove "not constant" variables from data set
-use "data sets/zillow_numeric_trimmed", clear
+use "data/zillow_numeric_trimmed", clear
 drop aname 	
 
 * reshape data
@@ -161,6 +162,6 @@ drop if missing(state)
 
 order pid sell* house* street* city state postal* zip* avalue*
 sort postalcode state city streetsuffix streetname housenumber
-save "data sets/zillow_numeric_wide", replace
+save "data/zillow_numeric_wide", replace
 
 
