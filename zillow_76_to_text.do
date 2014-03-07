@@ -6,14 +6,15 @@
 clear all
 set more off
 
-do "D:\Dan's Workspace\GitHub Repository\zillow_projects\removesym.ado"
-global dir "D:\Dan's Workspace\Zillow\"
+do "D:/Dan's Workspace/GitHub Repository/zillow_projects/removesym.ado"
+global dir "D:/Dan's Workspace/Zillow/"
 cd "$dir"
 
 **** (1)
 use "$dir/data/zillow_stacked_merged", clear
 keep if atype == 76
 
+removesym avalue, spanish
 removesym avalue, sym(<br/>) sub(space) //remove html symbols
 removesym avalue, allsym sub(space)
 replace avalue = trim(avalue)
@@ -23,4 +24,10 @@ drop if missing(avalue)
 
 save "$dir/data/atype76", replace
 
+use "$dir/data/atype76", clear
+
 outfile avalue using "$dir/data/atype76.txt", replace noquote wide
+
+* create small file for testing
+keep if _n < 8
+outfile avalue using "D:/Dan's Workspace/GitHub Repository/zillow_projects/atype76.txt", replace noquote wide

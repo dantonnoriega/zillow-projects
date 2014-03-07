@@ -2,10 +2,10 @@
 program define removesym
         version 13.1
 
-        syntax varlist [in] [, blanks SYMbol(string) SUBstitute(string) allsym NUMbers LETters QUOTes]
+        syntax varlist [in] [, blanks SYMbol(string) SUBstitute(string) allsym NUMbers LETters QUOTes SPAnish]
 		
         di "variable list: `varlist'"
-        if ("`blanks'" == "" && "`symbol'" == "" && "`allsym'" == "" && "`numbers' == "" && "`letters' == "" && "`quotes'" == "") local nopts = 1
+        if ("`blanks'" == "" && "`symbol'" == "" && "`allsym'" == "" && "`numbers' == "" && "`letters' == "" && "`quotes'" == "" && "`spanish'" == "") local nopts = 1
 		else local nopts = 0
 		
 		if (missing("`substitute'")) disp "substitute option disabled"
@@ -42,13 +42,34 @@ program define removesym
 			
 			
 			if ("`allsym'" == "allsym") {
-				di "entered allsym"	        
+				di "entered allsym"	        				
 				
-				local chrctr = " ~ ! @ # $ % ^ & * ( ) - _ = + { } [ ] | \ : ; < > , . / ? " // define problem characters
-				foreach q of local chrctr {
-					di "removed: `q'"
+				* remove all sym
+				forval q = 33/47 {
+					di "removed: " char(`q')
 					foreach v of varlist `varlist' {
-						quietly replace `v' = subinstr(`v',"`q'","`substitute'",.) `in'		        
+						quietly replace `v' = subinstr(`v',char(`q'),"`substitute'",.) `in'		        
+					}
+				}
+				
+				forval q = 58/64 {
+					di "removed: " char(`q')
+					foreach v of varlist `varlist' {
+						quietly replace `v' = subinstr(`v',char(`q'),"`substitute'",.) `in'		        
+					}
+				}
+				
+				forval q = 91/96 {
+					di "removed: " char(`q')
+					foreach v of varlist `varlist' {
+						quietly replace `v' = subinstr(`v',char(`q'),"`substitute'",.) `in'		        
+					}
+				}
+				
+				forval q = 123/255 {
+					di "removed: " char(`q')
+					foreach v of varlist `varlist' {
+						quietly replace `v' = subinstr(`v',char(`q'),"`substitute'",.) `in'		        
 					}
 				}
 			}
@@ -56,20 +77,14 @@ program define removesym
 			if("`quotes'" == "quotes") {
 				* remove any quotation marks
 				di "entered quotes"
-				di "removed: "char(34)
-				foreach v of varlist `varlist' {					
-					quietly replace `v' = subinstr(`v',char(34),"`substitute'",.) `in'		        
-				}
 				
-				di "removed: '"
-				foreach v of varlist `varlist' {
-					quietly replace `v' = subinstr(`v',"'","`substitute'",.) `in'		        
-				}
-				
-				di "removed: `"				
-				foreach v of varlist `varlist' {
-					quietly replace `v' = subinstr(`v',"`","`substitute'",.) `in'		        
-				}
+				local quotes = "char(34) char(39) char(96) char(145) char(146) char(147) char(148)"
+				foreach q of local quotes {
+					di "removed: " `q'
+					foreach v of varlist `varlist' {
+					  replace `v' = subinstr(`v',`q',"`substitute'",.) `in'		        
+					}
+				}					
 			}
 			
 			if ("`numbers'" == "numbers") {
@@ -94,41 +109,62 @@ program define removesym
 					}
 				}
 			}
+			
+			if ("`spanish'" == "spanish") {
+				di "entered spanish"
+				local letters = "char(225) char(233) char(237) char(241) char(243) char(250) char(252)"
+				local sletters = "char(191) char(161)"
+				local switch = "a e i n o u u"
+				local i = 0
+				foreach q of local letters {
+					local i = `i' + 1
+					local p : word `i' of `switch'
+					di "replaced " `q' " with `p'"
+					foreach v of varlist `varlist' {
+						quietly replace `v' = subinstr(`v',`q',"`p'",.) `in'       
+					}
+				}
+				
+				foreach q of local sletters {
+					di "removed: " `q'
+					foreach v of varlist `varlist' {
+						quietly replace `v' = subinstr(`v',`q',"",.) `in'       
+					}
+				}
+			}
 		}
 		
-		else {
+		if (`nopts' == 1) {
 			di "entered nopts"	        				
-			di "removed: blanks"
-		 
-			foreach v of varlist `varlist' {
-				quietly replace `v' = subinstr(`v'," ","`substitute'",.) `in'		        
-			}
-			
-			local chrctr = "~ ! @ # $ % ^ & * ( ) - _ = + { } [ ] | \ : ; < > , . / ?" // define problem characters
-			
-			foreach q of local chrctr {
-				di "removed: `q'"
+				
+			* remove all sym
+			forval q = 32/47 {
+				di "removed: " char(`q')
 				foreach v of varlist `varlist' {
-					quietly replace `v' = subinstr(`v',"`q'","`substitute'",.) `in'		        
+					quietly replace `v' = subinstr(`v',char(`q'),"`substitute'",.) `in'		        
 				}
-			}	
-
-			* remove any quotation marks
-			di "entered quotes"
-			di "removed: "char(34)
-			foreach v of varlist `varlist' {					
-				quietly replace `v' = subinstr(`v',char(34),"`substitute'",.) `in'		        
 			}
 			
-			di "removed: '"
-			foreach v of varlist `varlist' {
-				quietly replace `v' = subinstr(`v',"'"),"`substitute'",.) `in'		        
+			forval q = 58/64 {
+				di "removed: " char(`q')
+				foreach v of varlist `varlist' {
+					quietly replace `v' = subinstr(`v',char(`q'),"`substitute'",.) `in'		        
+				}
 			}
 			
-			di "removed: `"				
-			foreach v of varlist `varlist' {
-
-				quietly replace `v' = subinstr(`v',"`","`substitute'",.) `in'		        
+			forval q = 91/96 {
+				di "removed: " char(`q')
+				foreach v of varlist `varlist' {
+					quietly replace `v' = subinstr(`v',char(`q'),"`substitute'",.) `in'		        
+				}
 			}
+			
+			forval q = 123/255 {
+				di "removed: " char(`q')
+				foreach v of varlist `varlist' {
+					quietly replace `v' = subinstr(`v',char(`q'),"`substitute'",.) `in'		        
+				}
+			}				
+			
 		}
 end        
