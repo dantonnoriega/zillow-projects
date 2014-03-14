@@ -9,3 +9,4 @@ cd "$dir"
 
 do "$github/(0) initialize_zillow.do"
 do "$github/(1) zillow_trimdown.do"
+*do "$github/zillow_76_to_text.do"

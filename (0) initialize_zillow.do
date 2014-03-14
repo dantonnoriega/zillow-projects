@@ -20,7 +20,8 @@ if (`import_yn' == 1) {
 	
 	foreach dataset in "data_wo_descriptions" ///
 	"data_fields72_75" ///
-	"data_descriptions" {
+	"data_descriptions" ///
+	"type" {
 	
 		disp "importing `dataset'"
 		import delimited "D:/Work/Research/Zillow/raw_data/`dataset'.txt", clear
@@ -53,12 +54,12 @@ foreach dataset in "data_wo_descriptions" ///
 	
 	if (`k' == 1) {
 		use "data/`dataset'", clear
-		keep propertyid attributevalue propertyattributetypedisplayname propertyattributetypeid
+		keep propertyid attributevalue propertyattributetypedisplayname propertyattributetypeid definition
 		save "data/zillow_stacked", replace
 	}
 	else {	
 		use "data/`dataset'", clear
-		keep propertyid attributevalue propertyattributetypedisplayname propertyattributetypeid
+		keep propertyid attributevalue propertyattributetypedisplayname propertyattributetypeid definition
 		append using "data/zillow_stacked"
 		save "data/zillow_stacked", replace
 	}
@@ -68,7 +69,7 @@ foreach dataset in "data_wo_descriptions" ///
 }
 
 * sort data and check for obvious duplicates
-sort propertyattributetypeid propertyattributetypedisplayname attributevalue propertyid	
+sort definition propertyattributetypeid propertyattributetypedisplayname attributevalue propertyid	
 duplicates drop // drop any duplicate obs
 tempfile hold
 save `hold', replace

@@ -2,11 +2,12 @@
 * this code times down the zillow data to useable observations
 * 	(1) merge data with analysis table. we then remove unneeded variables. 
 *	(2) split data into numeric and string values
-*	(3) take the numeric data set and use it to tag unlikely single-family homes (SFH)
+*	(REMOVED) (3) take the numeric data set and use it to tag unlikely single-family homes (SFH)
 
 set more off
-clear programs
-do "D:/Dan's Workspace/GitHub Repository/zillow_projects/removesym.ado"
+pause on
+*clear programs
+*do "D:/Dan's Workspace/GitHub Repository/zillow_projects/removesym.ado"
 global dir "D:/Dan's Workspace/Zillow/"
 cd "$dir"
 
@@ -75,6 +76,7 @@ save "data/zillow_strings", replace
 
 
 
+/* (OLD CODE: REMOVED since we got the SFR home list)
 
 **** (3)
 * see /spreadsheets/zillow variable analysis table.xlsx for info
@@ -90,6 +92,7 @@ replace tag = 1 if !inrange(avalue,1600,2014) & atype ==  9
 replace tag = 1 if !inrange(avalue,1600,2014) & atype ==  10
 replace tag = 1 if avalue > 10 & atype ==  32
 replace tag = 1 if avalue > 9 & atype ==  36
+
 
 tempfile hold2
 save `hold2', replace
@@ -125,8 +128,10 @@ log close
 * remove "not constant" variables from data set
 use "data/zillow_numeric_trimmed", clear
 drop aname 	
+*/
 
 * reshape data
+use "data/zillow_numeric", clear
 reshape wide avalue, i(pid) j(atype)
 
 
@@ -141,6 +146,7 @@ drop if unitnumber != "na"	 // drop if listing a unit number. again, likely SFH 
 drop if housenumber == "na" // drop if there is no housenumber. can't find.
 drop if streetname == "list_only" // no way to identify where this property is
 drop avalue45 avalue91 avalue92 avalue32 avalue36 unitprefix unitnumber // dropped now useless variables
+pause
 
 * remove all "na" from string variables
 foreach var of varlist _all {
