@@ -1,13 +1,14 @@
 * zillow_wordlist_count.do
 * in this program we:
 *	(1) count and collapse over each unique word
-*	(2) export a list
+*	(2) export list
 
 set more off
 pause on
 global dir "D:/Dan's Workspace/Zillow/"
 cd "$dir"
 
+**** (1)
 * toggle imports (imprt) and using sample of whole data set (smpl)
 local imprt = 0
 local smpl = 0
@@ -36,6 +37,10 @@ sort group word
 
 collapse (sum) count, by(word)
 
+
+
+
+**** (2)
 clear programs
 do "D:\Dan's Workspace\GitHub Repository\zillow_projects/removesym.ado"
 drop if length(word) < 3 // drop words less than 2
@@ -45,3 +50,10 @@ gsort -count -word
 
 if (`smpl' == 1) save "$dir/data/wordlist_sample_collapsed", replace
 else save "$dir/data/wordlist76_collapsed", replace
+
+
+
+
+
+
+
