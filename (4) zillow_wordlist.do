@@ -10,7 +10,7 @@ cd "$dir"
 
 **** (1)
 * toggle imports (imprt) and using sample of whole data set (smpl)
-local imprt = 0
+local imprt = 1
 local smpl = 0
 
 * import or load data
@@ -51,9 +51,4 @@ gsort -count -word
 if (`smpl' == 1) save "$dir/data/wordlist_sample_collapsed", replace
 else save "$dir/data/wordlist76_collapsed", replace
 
-
-
-
-
-
-
+exit, STATA clear

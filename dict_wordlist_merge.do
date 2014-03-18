@@ -31,3 +31,4 @@ gsort -_merge -count -word
 
 drop if _merge == 1 & _merge1 == 1
 drop if count < 3 // drop if low counts
+gsort -_merge1 +word -count

@@ -1,6 +1,6 @@
-* zillow_76_to_text.do
+* (2) zillow_76_to_text.do
 * this code does a quick clean of atype 76
-* 	(1) keep only atype 76. remove all non alpha-numeric characters. replaces with spaces.
+* 	(1) merge final list of properties. keep only atype 76. remove all non alpha-numeric characters. replaces with spaces.
 *	(2) export text file
 
 clear all
@@ -12,7 +12,10 @@ cd "$dir"
 
 **** (1)
 use "$dir/data/zillow_stacked_merged", clear
+merge m:1 pid using "$dir/data/zillow_property_list_final"
+keep if _merge == 3
 keep if atype == 76
+drop _merge
 
 removesym avalue, spanish
 removesym avalue, sym(<br/>) sub(space) //remove html symbols
@@ -28,6 +31,9 @@ use "$dir/data/atype76", clear
 
 outfile avalue using "$dir/data/atype76.txt", replace noquote wide
 
-* create small file for testing
+/* create small file for testing
 keep if _n < 8
 outfile avalue using "D:/Dan's Workspace/GitHub Repository/zillow_projects/atype76.txt", replace noquote wide
+*/
+
+exit, STATA clear

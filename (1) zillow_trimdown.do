@@ -5,7 +5,7 @@
 *	(REMOVED) (3) take the numeric data set and use it to tag unlikely single-family homes (SFH)
 
 set more off
-pause on
+pause off
 *clear programs
 *do "D:/Dan's Workspace/GitHub Repository/zillow_projects/removesym.ado"
 global dir "D:/Dan's Workspace/Zillow/"
@@ -68,7 +68,7 @@ drop _merge
 
 save "data/zillow_numeric", replace
 
-use `hold', clear
+use `hold', clear 
 keep if destring == 0
 duplicates drop
 
@@ -132,6 +132,7 @@ drop aname
 
 * reshape data
 use "data/zillow_numeric", clear
+drop aname // aname is "not constant" and must be dropped
 reshape wide avalue, i(pid) j(atype)
 
 
@@ -170,4 +171,8 @@ order pid sell* house* street* city state postal* zip* avalue*
 sort postalcode state city streetsuffix streetname housenumber
 save "data/zillow_numeric_wide", replace
 
+* save final property list
+keep pid
+save "data/zillow_property_list_final", replace
 
+exit, STATA clear

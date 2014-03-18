@@ -21,7 +21,14 @@ Codes
 *	(2) split data into numeric and string values
 *	(3) take the numeric data set and use it to tag unlikely single-family homes (SFH)
 
-zillow_76_to_text.do
+(2) zillow_76_to_text.do
 * this code does a quick clean of atype 76
 * 	(1) keep only atype 76. remove all non alpha-numeric characters. replaces with spaces.
 *	(2) export text file
+
+(3) tokenize.py
+* tokenizes every word in the text file created by zillow_76_to_text.do
+
+(4) zillow_wordlist.do
+*	(1) count and collapse over each unique word
+*	(2) export list

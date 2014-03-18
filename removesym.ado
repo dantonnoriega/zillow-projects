@@ -102,7 +102,7 @@ program define removesym
 			
 			
 			if ("`basicsym'" == "basicsym") {
-				di "entered basicsym'"
+				di "entered basicsym"
 				
 				local basic = "~ ! ? @ # $ % ^ & * ( ) _ - + = { } [ ] : ; < > , . | \ /"
 				foreach q of local basic {

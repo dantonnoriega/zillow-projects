@@ -4,10 +4,11 @@
 *	- makes a master list of property IDs with addresses etc
 * 	- stacks all the property attibute data and then merges the master property list
 
-*clear all
+clear all
 set more off
 pause off
 
+global github "D:\Dan's Workspace\GitHub Repository\zillow_projects\"
 global dir "D:/Dan's Workspace/Zillow/"
 cd "$dir"
 
@@ -49,17 +50,19 @@ foreach dataset in "data_wo_descriptions" ///
 "data_descriptions" {
 	
 	if ("`dataset'" == "data_wo_descriptions") {
-		do "$github\(0.1) zillow_property_list.do"
+		capture confirm file "data/zillow_property_list.dta"
+		if (_rc == 601 | _rc == 603) do "$github\(0.1) zillow_property_list.do"
+		else disp "skip"
 	}
 	
 	if (`k' == 1) {
 		use "data/`dataset'", clear
-		keep propertyid attributevalue propertyattributetypedisplayname propertyattributetypeid definition
+		keep propertyid attributevalue propertyattributetypedisplayname propertyattributetypeid 
 		save "data/zillow_stacked", replace
 	}
 	else {	
 		use "data/`dataset'", clear
-		keep propertyid attributevalue propertyattributetypedisplayname propertyattributetypeid definition
+		keep propertyid attributevalue propertyattributetypedisplayname propertyattributetypeid 
 		append using "data/zillow_stacked"
 		save "data/zillow_stacked", replace
 	}
@@ -69,7 +72,7 @@ foreach dataset in "data_wo_descriptions" ///
 }
 
 * sort data and check for obvious duplicates
-sort definition propertyattributetypeid propertyattributetypedisplayname attributevalue propertyid	
+sort propertyattributetypeid propertyattributetypedisplayname attributevalue propertyid	
 duplicates drop // drop any duplicate obs
 tempfile hold
 save `hold', replace
@@ -77,9 +80,12 @@ save `hold', replace
 
 * merge data, drop problem ids, then reshape
 use `hold', clear
-merge m:1 propertyid using "data/list_of_removed_properties", nogen // tag the problem ids
-drop if inputerror == 1 // drop the nonunique/input error properties
-drop inputerror // drop the input error variable
+capture confirm file "data/list_of_removed_properties.dta"
+if (_rc == 7) {
+	merge m:1 propertyid using "data/list_of_removed_properties", nogen // tag the problem ids
+	drop if inputerror == 1 // drop the nonunique/input error properties
+	drop inputerror // drop the input error variable
+}
 
 merge m:1 propertyid using "data/zillow_property_list" // merge property addresses
 drop if _merge == 1 // drop properties that have no known address (there are useless)
@@ -106,6 +112,4 @@ duplicates drop
 
 save "data/zillow_stacked_merged", replace
 
-
-
-
+exit, STATA clear
