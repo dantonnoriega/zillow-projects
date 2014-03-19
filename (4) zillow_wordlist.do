@@ -4,7 +4,7 @@
 *	(2) export list
 
 set more off
-pause on
+pause off
 global dir "D:/Dan's Workspace/Zillow/"
 cd "$dir"
 
@@ -27,16 +27,12 @@ if (`imprt' == 1) {
 	* create a 1% sample for coding efficiency
 	sample 1
 	save "$dir/data/wordlist_sample.dta", replace
+	
+	if (`smpl' == 1) use "$dir/data/wordlist_sample", clear
+	else use "$dir/data/wordlist76.dta", clear
 }
 else if (`smpl' == 1) use "$dir/data/wordlist_sample", clear
 else use "$dir/data/wordlist76", clear
-
-* find unique words
-egen group = group(word), label // tag unique words
-sort group word
-
-collapse (sum) count, by(word)
-
 
 
 
@@ -44,6 +40,9 @@ collapse (sum) count, by(word)
 clear programs
 do "D:\Dan's Workspace\GitHub Repository\zillow_projects/removesym.ado"
 drop if length(word) < 3 // drop words less than 2
+
+collapse (sum) count, by(word)
+
 removesym word, numbers
 
 gsort -count -word
