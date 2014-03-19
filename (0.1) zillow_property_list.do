@@ -11,7 +11,7 @@ set more off
 pause off
 
 * toggle "import and merge"
-local toggle = 0
+local toggle = 1
 
 if (`toggle' == 1) {
 
@@ -189,4 +189,3 @@ duplicates drop
 
 * save
 save "data/zillow_property_list", replace
-

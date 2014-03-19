@@ -98,8 +98,13 @@ program define removesym
 			}
 			
 			
+<<<<<<< HEAD
 			* (pc version) remove any quotation marks
 			if("`quotes'" == "quotes" & `pc' == 1) {
+=======
+			if ("`basicsym'" == "basicsym") {
+				di "entered basicsym"
+>>>>>>> FETCH_HEAD
 				
 				di "entered quotes"
 				
