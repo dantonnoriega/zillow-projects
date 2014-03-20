@@ -1,8 +1,8 @@
 program define removesym
         version 12.1
 
-        syntax varlist [in] [, blanks SYMbol(string) SUBstitute(string) BASICsym EXTendedsym ALLsym NUMbers LETters QUOTes SPAnish MAC]
-		
+        syntax [varlist] [in] [, blanks SYMbol(string) SUBstitute(string) BASICsym EXTendedsym ALLsym NUMbers LETters QUOTes SPAnish MAC]
+				
         di "variable list: `varlist'"
         
         * check if an option has been selected
@@ -18,7 +18,10 @@ program define removesym
 		else disp "substitute option enabled. subbing: `substitute'"
 		
 		* check if "mac" option is enable. this alters the spanish, extendedsym, and allsym ascii codes
-		if ("`mac'" == "mac") local pc = 0
+		if ("`mac'" == "mac") {
+			disp "mac ascii enable"
+			local pc = 0
+		}
 		else local pc = 1
 		
 		if (`nopts' != 1) {
@@ -98,13 +101,8 @@ program define removesym
 			}
 			
 			
-<<<<<<< HEAD
 			* (pc version) remove any quotation marks
 			if("`quotes'" == "quotes" & `pc' == 1) {
-=======
-			if ("`basicsym'" == "basicsym") {
-				di "entered basicsym"
->>>>>>> FETCH_HEAD
 				
 				di "entered quotes"
 				
@@ -216,7 +214,7 @@ program define removesym
 				di "entered allsym"	        				
 				
 				forval q = 33/47 {
-					disp "`q'"
+					*disp "`q'"
 					di "removed: " char(`q')
 					foreach v of varlist `varlist' {
 						quietly replace `v' = subinstr(`v',char(`q'),"`substitute'",.) `in'		        
@@ -224,7 +222,7 @@ program define removesym
 				}
 				
 				forval q = 58/64 {
-					disp "`q'"
+					*disp "`q'"
 					di "removed: " char(`q')
 					foreach v of varlist `varlist' {
 						quietly replace `v' = subinstr(`v',char(`q'),"`substitute'",.) `in'		        
@@ -232,7 +230,7 @@ program define removesym
 				}
 				
 				forval q = 91/96 {
-					disp "`q'"
+					*disp "`q'"
 					di "removed: " char(`q')
 					foreach v of varlist `varlist' {
 						quietly replace `v' = subinstr(`v',char(`q'),"`substitute'",.) `in'		        
@@ -240,7 +238,7 @@ program define removesym
 				}
 				
 				forval q = 123/255 {
-					disp "`q'"
+					*disp "`q'"
 					di "removed: " char(`q')
 					foreach v of varlist `varlist' {
 						quietly replace `v' = subinstr(`v',char(`q'),"`substitute'",.) `in'		        
