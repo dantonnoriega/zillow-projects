@@ -17,9 +17,8 @@ keep if _merge == 3
 keep if atype == 76
 drop _merge
 
-removesym avalue, spanish
-removesym avalue, sym(<br/>) sub(space) //remove html symbols
-removesym avalue, allsym sub(space)
+removesym avalue, spanish basic
+removesym avalue, ext
 replace avalue = trim(avalue)
 tempfile keep76
 save `keep76', replace
@@ -29,11 +28,10 @@ save "$dir/data/atype76", replace
 
 use "$dir/data/atype76", clear
 
-outfile avalue using "$dir/data/atype76.txt", replace noquote wide
+outfile pid avalue using "$dir/data/atype76.txt", replace noquote wide
 
-/* create small file for testing
-keep if _n < 8
-outfile avalue using "D:/Dan's Workspace/GitHub Repository/zillow_projects/atype76.txt", replace noquote wide
-*/
+sample .0001
+outfile pid avalue using "D:/Dan's Workspace/GitHub Repository/zillow_projects/atype76.txt", replace noquote wide
+
 
 exit, STATA clear
