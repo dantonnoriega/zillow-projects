@@ -17,21 +17,39 @@ keep if _merge == 3
 keep if atype == 76
 drop _merge
 
-removesym avalue, spanish basic
-removesym avalue, ext
+* export the data, raw
+outfile avalue using "$dir/data/atype76_raw.txt", replace noquote wide
+export delimited pid avalue using "$dir/data/atype76_raw.csv", replace
+tempfile hold
+save `hold', replace
+
+* export a sample for testing
+sample .01
+outfile avalue using "D:\Dan's Workspace\GitHub Repository\zillow_projects\data\atype76_raw.txt", replace noquote wide
+export delimited pid avalue using "D:\Dan's Workspace\GitHub Repository\zillow_projects\data/atype76_raw.csv", replace
+
+* reload complete raw data set
+use `hold', clear
+
+* use stata to clean string var "avalue"
+removesym avalue, spanish ext
 replace avalue = trim(avalue)
 tempfile keep76
 save `keep76', replace
 drop if missing(avalue)
 
+* save clean data set
 save "$dir/data/atype76", replace
 
+* export a copy of clean data set in .txt and .csv
 use "$dir/data/atype76", clear
+outfile avalue using "$dir/data/atype76.txt", replace noquote wide
+export delimited pid avalue using "$dir/data/atype76.csv", replace
 
-outfile pid avalue using "$dir/data/atype76.txt", replace noquote wide
+* export a sample of clean data
+sample .01
+outfile avalue using "D:\Dan's Workspace\GitHub Repository\zillow_projects\data/atype76.txt", replace noquote wide
+export delimited pid avalue using "D:\Dan's Workspace\GitHub Repository\zillow_projects\data/atype76.csv", replace
 
-sample .0001
-outfile pid avalue using "D:/Dan's Workspace/GitHub Repository/zillow_projects/atype76.txt", replace noquote wide
-
-
+* quit Stata
 exit, STATA clear

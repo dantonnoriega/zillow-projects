@@ -11,8 +11,9 @@ set GIT
 
 REM "%STATA%\StataMP-64" do "%GIT%\(0) initialize_zillow.do"
 REM "%STATA%\StataMP-64" do "%GIT%\(1) zillow_trimdown.do"
-"%STATA%\StataMP-64" do "%GIT%\(2) zillow_76_to_text.do"
-REM python "%GIT%\(3) tokenize.py"
+REM "%STATA%\StataMP-64" do "%GIT%\(2) zillow_76_to_text.do"
+python "%GIT%\(3.1) zillow_tokenize_atype76.py"
+python "%GIT%\(3.2) tokenize_greenhomes.py"
 REM "%STATA%\StataMP-64" do "%GIT%\(4) zillow_wordlist.do"
 REM "%STATA%\StataMP-64" "%GIT%\dict_wordlist_merge.do"
 
