@@ -16,6 +16,7 @@ merge m:1 pid using "$dir/data/zillow_property_list_final"
 keep if _merge == 3
 keep if atype == 76
 drop _merge
+keep pid avalue
 
 * export the data, raw
 outfile avalue using "$dir/data/atype76_raw.txt", replace noquote wide
@@ -24,7 +25,7 @@ tempfile hold
 save `hold', replace
 
 * export a sample for testing
-sample .01
+sample 1
 outfile avalue using "D:\Dan's Workspace\GitHub Repository\zillow_projects\data\atype76_raw.txt", replace noquote wide
 export delimited pid avalue using "D:\Dan's Workspace\GitHub Repository\zillow_projects\data/atype76_raw.csv", replace
 
@@ -32,7 +33,7 @@ export delimited pid avalue using "D:\Dan's Workspace\GitHub Repository\zillow_p
 use `hold', clear
 
 * use stata to clean string var "avalue"
-removesym avalue, spanish ext
+removesym avalue, spanish basic ext
 replace avalue = trim(avalue)
 tempfile keep76
 save `keep76', replace
@@ -47,9 +48,19 @@ outfile avalue using "$dir/data/atype76.txt", replace noquote wide
 export delimited pid avalue using "$dir/data/atype76.csv", replace
 
 * export a sample of clean data
-sample .01
+sample 1
 outfile avalue using "D:\Dan's Workspace\GitHub Repository\zillow_projects\data/atype76.txt", replace noquote wide
 export delimited pid avalue using "D:\Dan's Workspace\GitHub Repository\zillow_projects\data/atype76.csv", replace
+
+
+* export houses with words "solar" and "effici"
+use "$dir/data/atype76", clear
+gen tag = regexm(avalue, "[ ](solar)[ ]")
+replace tag = regexm(avalue, "(effici)")
+keep if tag == 1
+drop tag
+export delimited pid avalue using "$dir/data/zillow_w_solar_tag.csv", replace
+
 
 * quit Stata
 exit, STATA clear
