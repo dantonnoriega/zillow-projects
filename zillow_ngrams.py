@@ -1,37 +1,59 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# module: zillow_ngrams.py
+# this function create ngrams of words for sample of zillow homes for modeling
 
-## (3.0) tokenize_sample
-## this code tokenizes words for sample of zillow homes for modeling
+import nltk
+import re
+import pandas as pd
+import codecs
+import random
+from nolla_lang_detect import detect_language
+from replace_spanish import replace_spanish
+from HTMLParser import HTMLParser # for HTML tag stripper
 
-def zillow_ngrams(infile, outprefix):
-    import nltk
-    import os
-    import re
-    import pandas as pd
-    import codecs
+# define
+def ngrams(infile, outprefix, sample=0, n=20000):
     
-    os.chdir("D:\Dan's Workspace\GitHub Repository\zillow_projects\data")
-    #os.chdir("D:\Dan's Workspace\Zillow\data")
+    ## html tag stripper
+    # from http://stackoverflow.com/questions/753052/strip-html-from-strings-in-python
+    class MLStripper(HTMLParser):
+        def __init__(self):
+            self.reset()
+            self.fed = []
+        def handle_data(self, d):
+            self.fed.append(d)
+        def get_data(self):
+            return ''.join(self.fed)
     
+    def strip_tags(html):
+        s = MLStripper()
+        s.feed(html)
+        return s.get_data()
+    
+       
     # periods (to save abbrevs)
-    period = re.compile(r'(\A|\s)(\w\.)+')
+    period = re.compile(r'(?<=\s)(\w\.)+')
     # all non alphanumeric
     symbols = re.compile(r'(\W+)', re.U)
     # pure numeric and numeric/alpha combos
-    numeric = re.compile(r'(\d+|\w+\d+|\d+\w+|\d+\w+\d+|\w+\d+\w+)(\s|\Z)', re.I|re.U)
+    numeric = re.compile(r'(\d+|\w+\d+|\d+\w+|\d+\w+\d+|\w+\d+\w+)(\s)', re.I|re.U)
     # separators (any whitespace)
     seps = re.compile(r'\s+')
     # lone non digit numbers
-    lone = re.compile(r'(?<=\s)(\D)(?=\s|\Z)', re.I|re.U)
+    lone = re.compile(r'(?<=\s)(\D)(?=\s)', re.I|re.U)
     # get stopwords
     stops = set(nltk.corpus.stopwords.words("english"))
+    spanish_stops = set(nltk.corpus.stopwords.words("spanish"))
     # get stemmers
     stemmer = nltk.stem.porter.PorterStemmer()
-    
+        
     ## cleaner (order matters)
+    # edited code original from:
+    # https://github.com/TaddyLab/yelp/blob/master/code/tokenize.py
     def clean(text): 
         text = text.lower()
+        text = strip_tags(text)
         h = period.match(text) # find any abbreviations (like p.v.c.)
         if h:
             text = text.replace('.','') # remove periods if found
@@ -43,22 +65,29 @@ def zillow_ngrams(infile, outprefix):
         return text
     
     ## create utf-8 compatible codec files
-    corpus_clean = codecs.open(outprefix+'_corpus_clean.txt', 'w', encoding = 'utf-8')
-    uni_fd = codecs.open('uni_fd.txt', 'w', encoding = 'utf-8')
-    bi = codecs.open('bi.txt', 'w', encoding = 'utf-8')
-    tri = codecs.open('tri.txt', 'w', encoding = 'utf-8')
-    bi_fd = codecs.open('bi_fd.txt', 'w', encoding = 'utf-8')
-    tri_fd = codecs.open('tri_fd.txt', 'w', encoding = 'utf-8')
-    uni = codecs.open('uni.txt', 'w', encoding = 'utf-8')
-    
+    corpus_clean = codecs.open('%s_corpus_clean.txt' % outprefix, 'w', encoding = 'utf-8')
+    uni = codecs.open('%s_uni.txt' % outprefix, 'w', encoding = 'utf-8')
+    bi = codecs.open('%s_bi.txt' % outprefix, 'w', encoding = 'utf-8')
+    tri = codecs.open('%s_tri.txt' % outprefix, 'w', encoding = 'utf-8')
+    uni_fd_out = codecs.open('%s_uni_fd.txt' % outprefix, 'w', encoding = 'utf-8')
+    bi_fd_out = codecs.open('%s_bi_fd.txt' % outprefix, 'w', encoding = 'utf-8')
+    tri_fd_out = codecs.open('%s_tri_fd.txt' % outprefix, 'w', encoding = 'utf-8')
+
     ## import file
-    f = open(    globals()['infile'],'r')
+    f = codecs.open('%s' % infile)
     
     ## import data using pandas package
     # -names- is to label the columns
     # -header- makes the first observation the header 
-    data = pd.read_csv(f, names = ['pid','text'], header = 0, encoding='iso-8859-1')
+    data = pd.read_csv(f, names = ['pid','text'], header = 0, encoding = 'ISO-8859-1') # utf-8 encoding can't read spanish characters
     f.close()
+    
+    ## save text data
+    # sample data, if enabled
+    if sample == 1 and len(data) > n: # must have more data than the sample draw, @n
+        draw = random.sample(data.index, n) # random sample using dataframe indeces, save to @draw
+        data = data.ix[draw].reset_index() # .ix selects from list of indeces in @draw, reset_index() resets the index back to 0,1,2...
+    # store text
     text = data['text']
     
     uni_fd = nltk.FreqDist()
@@ -69,10 +98,28 @@ def zillow_ngrams(infile, outprefix):
     # create output file of tokens by household (aka by row/obs) and make corpus
     i = 0 # initialize i
     for line in text:
-        txt = clean(line) 
-        tkns = [w for w in txt.split() if len(w) > 2 ] # only > 2 letter words
-        tkns = [w for w in tkns if not w in stops]
-        tkns = [stemmer.stem(w) for w in tkns]
+        txt = clean(line)
+        language = detect_language(txt)
+        
+        if language != 'english':
+            print i, language
+        if language == 'english':
+            tkns = [w for w in txt.split() if len(w) > 2 ] # only > 2 letter words 
+            tkns = [w for w in tkns if not w in stops]
+            tkns = [replace_spanish(w) for w in tkns]
+            tkns = [stemmer.stem(w) for w in tkns]
+        if language == 'spanish':
+            tkns = [w for w in txt.split() if len(w) > 2 ] # only > 2 letter words
+            tkns = [w for w in tkns if not w in spanish_stops]
+            tkns = [replace_spanish(w) for w in tkns]
+            tkns = [stemmer.stem(w) for w in tkns]
+        if language == 'bilingual':
+            tkns = [w for w in txt.split() if len(w) > 2 ] # only > 2 letter words
+            tkns = [w for w in tkns if not w in spanish_stops]
+            tkns = [w for w in tkns if not w in stops]
+            tkns = [replace_spanish(w) for w in tkns]
+            tkns = [stemmer.stem(w) for w in tkns]
+                       
         doc = nltk.Text(tkns)
         bigrams = nltk.bigrams(doc) # find bigrams
         trigrams = nltk.trigrams(doc)	# find trigrams
@@ -83,40 +130,76 @@ def zillow_ngrams(infile, outprefix):
         bi_cnt = dict((w,bi_counter(w)) for w in set(bigrams))
         tri_counter = trigrams.count # minor speedup
         tri_cnt = dict((w,tri_counter(w)) for w in set(trigrams))
+        
+        # get pid
         pid = data['pid'][i]   
     
-        for w in tkns:
-        uni_fd.inc(w)
-        for w in bigrams:
-            bi_fd.inc(w)
-        for w in trigrams:
-            tri_fd.inc(w)
+        for g in tkns:
+            uni_fd.inc(g)
+        for g in bigrams:
+            bi_fd.inc(g)
+        for g in trigrams:
+            tri_fd.inc(g)
+        
+        """
+        The code:
             
-        for w in tkncnt:       
-            uni.write(u'%-15s \t %-10s \t %-25s \t %10s\r\n' % (pid,i+1,w,tkncnt[w]))       
+            w = ''
+            for n in g:
+                w += n + ' '
+            w = w.strip()
+            
+        is used to make the ngrams > 1 output nicer. we get...
+            'robust and'
+        instead of...
+            (u'robust', u'and')
+        """
+        
+        for w in tkncnt:
             corpus_clean.write(u"{0} ".format(w)) 
-        for w in bi_cnt:       
-            bi.write(u'%-15s \t %-10s \t %-25s \t %10s\r\n' % (pid,i+1,w,bi_cnt[w]))
-        for w in tri_cnt:       
-            tri.write(u'%-15s \t %-10s \t %-25s \t %10s\r\n' % (pid,i+1,w,tri_cnt[w]))       
-  		
-        i += 1
-        print i
-    
-    # tokenize the corpus
-    for w in bi_fd:
-        bi_fd.write(u'%-15s \t %4s\r\n' % (w, bi_fd[w]))
-    for w in tri_fd:
-        tri_fd.write(u'%-15s \t %4s\r\n' % (w, tri_fd[w]))
+            uni.write(u"%-15s \t %-10s \t %-15s \t %10s \t %8s\r\n" % (pid,i+1,w,tkncnt[w],language)) 
+        for g in bi_cnt:
+            w = ''
+            for n in g:
+                w += n + ' '
+            w = w.strip()
+            bi.write(u"%-15s \t %-10s \t %-25s \t %10s \t %8s\r\n" % (pid,i+1,w,bi_cnt[g],language))
+        for g in tri_cnt:
+            w = ''
+            for n in g:
+                w += n + ' '
+            w = w.strip()
+            tri.write(u"%-15s \t %-10s \t %-35s \t %10s \t %8s\r\n" % (pid,i+1,w,tri_cnt[g],language))    
+             		
+        i += 1 
+        if i % 1000 == 0:
+            print '*** iter %d ***' % i
+                     
+    ## tokenize the corpus
     for w in uni_fd:
-        uni_fd.write(u'%-15s \t %4s\r\n' % (w,uni_fd[w]))
-    
-    uni.close()
-    uni_fd.close()
-    corpus_clean.close()
-    bi_fd.close()  
-    tri_fd.close()  
-    tri.close()
-    bi.close()
+        uni_fd_out.write(u"%-35s \t %4s\r\n" % (w,uni_fd[w]))
+    for g in bi_fd:
+        w = ''
+        for n in g:
+            w += n + ' '
+        w = w.strip()
+        bi_fd_out.write(u"%-35s \t %4s\r\n" % (w,bi_fd[g]))
+    for g in tri_fd:
+        w = ''
+        for n in g:
+            w += n + ' '
+        w = w.strip()
+        tri_fd_out.write(u"%-35s \t %4s\r\n" % (w,tri_fd[g]))
 
+    print "\n\n **** grams completed for %s with prefix %s ****" % (infile, outprefix) 
+ 
+
+    
+    corpus_clean.close()
+    uni.close()    
+    bi.close()
+    tri.close()
+    uni_fd_out.close()
+    bi_fd_out.close()  
+    tri_fd_out.close() 
     
