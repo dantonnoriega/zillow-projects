@@ -10,28 +10,15 @@ import codecs
 import random
 from nolla_lang_detect import detect_language
 from replace_spanish import replace_spanish
-from HTMLParser import HTMLParser # for HTML tag stripper
+from remove_html import strip_tags
+
+
+
 
 # define
 def ngrams(infile, outprefix, sample=0, n=20000):
     
-    ## html tag stripper
-    # from http://stackoverflow.com/questions/753052/strip-html-from-strings-in-python
-    class MLStripper(HTMLParser):
-        def __init__(self):
-            self.reset()
-            self.fed = []
-        def handle_data(self, d):
-            self.fed.append(d)
-        def get_data(self):
-            return ''.join(self.fed)
     
-    def strip_tags(html):
-        s = MLStripper()
-        s.feed(html)
-        return s.get_data()
-    
-       
     # periods (to save abbrevs)
     period = re.compile(r'(?<=\s)(\w\.)+')
     # all non alphanumeric
@@ -64,14 +51,21 @@ def ngrams(infile, outprefix, sample=0, n=20000):
     
         return text
     
+    
+    ## create a tag for samples
+    if sample == 1:
+        samp_tag = "_sample"
+    else:
+        samp_tag = ''
+        
     ## create utf-8 compatible codec files
-    corpus_clean = codecs.open('%s_corpus_clean.txt' % outprefix, 'w', encoding = 'utf-8')
-    uni = codecs.open('%s_uni.txt' % outprefix, 'w', encoding = 'utf-8')
-    bi = codecs.open('%s_bi.txt' % outprefix, 'w', encoding = 'utf-8')
-    tri = codecs.open('%s_tri.txt' % outprefix, 'w', encoding = 'utf-8')
-    uni_fd_out = codecs.open('%s_uni_fd.txt' % outprefix, 'w', encoding = 'utf-8')
-    bi_fd_out = codecs.open('%s_bi_fd.txt' % outprefix, 'w', encoding = 'utf-8')
-    tri_fd_out = codecs.open('%s_tri_fd.txt' % outprefix, 'w', encoding = 'utf-8')
+    corpus_clean = codecs.open('%s_corpus_clean%s.txt' % (outprefix, samp_tag), 'w', encoding = 'utf-8')
+    uni = codecs.open('%s_uni%s.txt' % (outprefix, samp_tag), 'w', encoding = 'utf-8')
+    bi = codecs.open('%s_bi%s.txt' % (outprefix, samp_tag), 'w', encoding = 'utf-8')
+    tri = codecs.open('%s_tri%s.txt' % (outprefix, samp_tag), 'w', encoding = 'utf-8')
+    uni_fd_out = codecs.open('%s_uni_fd%s.txt' % (outprefix, samp_tag), 'w', encoding = 'utf-8')
+    bi_fd_out = codecs.open('%s_bi_fd%s.txt' % (outprefix, samp_tag), 'w', encoding = 'utf-8')
+    tri_fd_out = codecs.open('%s_tri_fd%s.txt' % (outprefix, samp_tag), 'w', encoding = 'utf-8')
 
     ## import file
     f = codecs.open('%s' % infile)
@@ -191,7 +185,7 @@ def ngrams(infile, outprefix, sample=0, n=20000):
         w = w.strip()
         tri_fd_out.write(u"%-35s \t %4s\r\n" % (w,tri_fd[g]))
 
-    print "\n\n **** grams completed for %s with prefix %s ****" % (infile, outprefix) 
+    print "\n\n **** ngrams completed for '%s' with prefix '%s%s' ****" % (infile, outprefix, samp_tag) 
  
 
     
