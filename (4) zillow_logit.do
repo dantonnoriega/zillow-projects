@@ -12,7 +12,7 @@ set more off
 
 global dir "D:\Dan's Workspace\GitHub Repository\zillow_projects\data"
 cd "$dir"
-log using "log _ (4) zillow_logit.txt", replace
+log using "log (4) zillow_logit.txt", replace
 
 * ----------------- *
 * 	Zillow Data		*

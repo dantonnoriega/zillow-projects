@@ -26,9 +26,17 @@ Codes
 * 	(1) keep only atype 76. remove all non alpha-numeric characters. replaces with spaces.
 *	(2) export text file
 
-(3) tokenize.py
-* tokenizes every word in the text file created by zillow_76_to_text.do
-
-(4) zillow_wordlist.do
-*	(1) count and collapse over each unique word
-*	(2) export list
+(3) run_zillow_ngrams.py
+* simple program that calls the function "zillow_ngrams.py"
+* depends on:
+	- zillow_ngrams.py
+		main workhorse program. tokenizes every word (uni, bi, and tri grams) in the text file created by zillow_76_to_text.do
+	- replace_spanish.py
+		replaces all spanish characters with english versions
+	- remove_html.py
+		removes html formatting
+	- nolla_lang_detect.py
+		inspired by a program written by a dude last named "Nolla". it scans text and detects if its english, spanish, or bi lingual.
+	
+(4) zillow_logit.do
+*	imports data, trims counts, then runs logit on some bigrams
