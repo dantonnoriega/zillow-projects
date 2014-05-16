@@ -41,38 +41,29 @@ words <- c(t(as.matrix(words))) # combine a transpose of matrix column text data
 ## find all households with words of interest then remove duplicates hhids and match hhids to corpus
 hhid <- data.frame() # initialize empty data frame 
 
-for(i in words) hhid = rbind(hhid,subset(unigrams, word == i)) # rowbind all subsets of words
-for(i in words) hhid = rbind(hhid,subset(bigrams, word == i)) # rowbind all subsets of words
-
+hhid1 <- subset(unigrams, match(unigrams$word,words,nomatch=0) > 0)
+hhid2 <- subset(bigrams, match(bigrams$word,words,nomatch=0) > 0)
+hhid <- rbind(hhid1,hhid2)
 hhid <- unique(sort(hhid$id)) # remove duplicates and sort
-hhid.sample <- sample(hhid,100)
 
 ## match hhids to corpus, extract descriptions
 hhid.match <- data.frame()
-
-
-### MC TEST
-corpus.upper <- corpus[1:100,]
-hhid.samp <- corpus.upper[sample(nrow(corpus.upper),10),1]
-
-ptime <- proc.time()
-hhid.match <- foreach(i = iter(hhid.samp), .combine = rbind) %dopar% {
-	print(i)
-	matched <- subset(corpus.upper, pid == i)
-	return(matched)
-}
-ptime <- proc.time() - ptime
-print(ptime)
-write.xlsx(hhid.match,"zillow_word_tag.xlsx",row.names = FALSE)
-
-hhid.match2 <- data.frame()
 stime <- proc.time()
-hhid.match <- foreach(i = iter(hhid.samp), .combine = rbind) %do% {
-	print(i)
-	matched <- subset(corpus.upper, pid == i)
-	return(matched)
-}
+hhid.match <- subset(corpus, match(corpus$pid,hhid,nomatch=0) > 0)
 stime <- proc.time() - stime
 print(stime)
+write.xlsx(hhid.match,"zillow_word_tag.xlsx",row.names = FALSE)
+
+### MC TEST
+hhid.match2 <- data.frame()
+hhid.matrix <- hhid
+dim(hhid.matrix) <- c(ceiling(length(hhid)/detectCores()),detectCores())
+
+ptime <- proc.time()
+hhid.match2 <- foreach(i = iter(hhid.matrix, by = "column"), .combine = rbind) %dopar% subset(corpus, match(corpus$pid, i, nomatch=0) > 0)
+ptime <- proc.time() - ptime
+print(ptime)
+
+
 
 
