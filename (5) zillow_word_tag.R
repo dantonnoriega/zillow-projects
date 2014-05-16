@@ -54,6 +54,8 @@ hhid.match <- subset(corpus, match(corpus$pid,hhid,nomatch=0) > 0)
 stime <- proc.time() - stime
 print(stime)
 
+
+write.csv(hhid.match,"zillow_word_tag.csv", row.names = FALSE)
 write.csv(hhid.match,"D:/Dan's Workspace/Zillow/spreadsheets/zillow_word_tag.csv", row.names = FALSE)
 
 start.time <- proc.time() - start.time
