@@ -60,9 +60,9 @@ def ngrams(infile, outprefix, sample=0, n=20000):
         
     ## create utf-8 compatible codec files
     corpus_clean = codecs.open('%s_corpus_clean%s.txt' % (outprefix, samp_tag), 'w', encoding = 'utf-8')
-    uni = codecs.open('%s_uni%s.txt' % (outprefix, samp_tag), 'w', encoding = 'utf-8')
-    bi = codecs.open('%s_bi%s.txt' % (outprefix, samp_tag), 'w', encoding = 'utf-8')
-    tri = codecs.open('%s_tri%s.txt' % (outprefix, samp_tag), 'w', encoding = 'utf-8')
+    uni_out = codecs.open('%s_uni%s.txt' % (outprefix, samp_tag), 'w', encoding = 'utf-8')
+    bi_out = codecs.open('%s_bi%s.txt' % (outprefix, samp_tag), 'w', encoding = 'utf-8')
+    tri_out = codecs.open('%s_tri%s.txt' % (outprefix, samp_tag), 'w', encoding = 'utf-8')
     uni_fd_out = codecs.open('%s_uni_fd%s.txt' % (outprefix, samp_tag), 'w', encoding = 'utf-8')
     bi_fd_out = codecs.open('%s_bi_fd%s.txt' % (outprefix, samp_tag), 'w', encoding = 'utf-8')
     tri_fd_out = codecs.open('%s_tri_fd%s.txt' % (outprefix, samp_tag), 'w', encoding = 'utf-8')
@@ -151,19 +151,19 @@ def ngrams(infile, outprefix, sample=0, n=20000):
         
         for w in tkncnt:
             corpus_clean.write(u"{0} ".format(w)) 
-            uni.write(u"%-15s \t %-10s \t %-15s \t %10s \t %8s\r\n" % (pid,i+1,w,tkncnt[w],language)) 
+            uni_out.write(u"%-15s \t %-10s \t %-15s \t %10s \t %8s\r\n" % (pid,i+1,w,tkncnt[w],language)) 
         for g in bi_cnt:
             w = ''
             for n in g:
                 w += n + ' '
             w = w.strip()
-            bi.write(u"%-15s \t %-10s \t %-25s \t %10s \t %8s\r\n" % (pid,i+1,w,bi_cnt[g],language))
+            bi_out.write(u"%-15s \t %-10s \t %-25s \t %10s \t %8s\r\n" % (pid,i+1,w,bi_cnt[g],language))
         for g in tri_cnt:
             w = ''
             for n in g:
                 w += n + ' '
             w = w.strip()
-            tri.write(u"%-15s \t %-10s \t %-35s \t %10s \t %8s\r\n" % (pid,i+1,w,tri_cnt[g],language))    
+            tri_out.write(u"%-15s \t %-10s \t %-35s \t %10s \t %8s\r\n" % (pid,i+1,w,tri_cnt[g],language))    
              		
         i += 1 
         if i % 1000 == 0:
@@ -190,9 +190,9 @@ def ngrams(infile, outprefix, sample=0, n=20000):
 
     
     corpus_clean.close()
-    uni.close()    
-    bi.close()
-    tri.close()
+    uni_out.close()    
+    bi_out.close()
+    tri_out.close()
     uni_fd_out.close()
     bi_fd_out.close()  
     tri_fd_out.close() 

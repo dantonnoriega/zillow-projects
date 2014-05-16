@@ -1,0 +1,576 @@
+## zillow word tag#
+#
+## functions#
+trim <- function(x) {#
+	gsub("^\\s+|\\s+$", "", x)#
+}#
+woi <- function(x,y) {#
+	subset(y, word == x)	#
+}#
+#
+## input data#
+# zillow unigrams by house id#
+setwd("/Users/dnoriega/Documents/Github/zillow_projects")#
+unigrams = read.table("data/zillow_uni_sample.txt", as.is = TRUE, sep = "\t")#
+unigrams <- unigrams[,c(1,3)] # subset dataframe `unigrams` all rows, columns 1 and 3  #
+names(unigrams) <- c("id","word") # rename data variable names#
+unigrams.sample <- unigrams[sample(nrow(unigrams),size=100), 1:ncol(unigrams)] # sample n = 100 from all rows in both columns#
+#
+# zillow bigrams by house id#
+setwd("/Users/dnoriega/Documents/Github/zillow_projects")#
+bigrams = read.table("data/zillow_bi_sample.txt", as.is = TRUE, sep = "\t")#
+bigrams <- bigrams[,c(1,3)] # subset dataframe `bigrams` all rows, columns 1 and 3  #
+names(bigrams) <- c("id","word") # rename data variable names#
+bigrams.sample <- bigrams[sample(nrow(bigrams),size=100), 1:ncol(bigrams)] # sample n = 100 from all rows in both columns#
+# words of interest#
+words = read.table("data/zillow_words_of_interest.txt",sep="\n")#
+words <- c(t(as.matrix(words))) # combine a transpose of matrix column text data#
+#
+# create function that subsets data frame by matched words of interest (woi)#
+# find all households with words of interest#
+hhid <- data.frame() # initialize empty data frame #
+for(i in words) hhid = rbind(hhid,woi(i,unigrams)) # rowbind all subsets of words#
+for(i in words) hhid = rbind(hhid,woi(i,bigrams)) # rowbind all subsets of words
+trim(head(bigrams[,1],10))
+trim(head(bigrams[,2],10))
+x<-trim(head(bigrams[,2],10))
+class(x)
+mode(x)
+is.vector(x)
+is.dataframe(x)
+is.data.frame(x)
+as.data.frame(x)
+as.data.frame(x,as.is=TRUE)
+sapply(x,mode)
+x[1]
+head(bigrams,10)
+head(bigrams,10)[,2]
+head(bigrams,10)[,2]<-trim(head(bigrams,10)[,2])
+bigrams[1:10,2]<-trim(head(bigrams,10)[,2])
+head(bigrams,10)[,2]
+bigrams[1:10,]<-trim(head(bigrams,10))
+head(bigrams,10)
+bigrams[1:10,words]
+bigrams$words[1:10]
+bigrams$words
+bigrams$word[1:10]
+bigrams$word[1:20]
+bigrams$word[1:10]<-c(1:10)
+bigrams$word[1:10]
+bigrams[1:10,]
+bigrams.sample <- bigrams[sample(nrow(bigrams),size=10), 1:ncol(bigrams)] # sample n = 100 from all rows in both columns
+bigrams.sample
+bigrams.sample$word <- trim(bigrams.sample$word)
+bigrams.sample$word
+bigrams.sample
+?grep
+?grep
+?gsub
+## zillow word tag#
+#
+## functions#
+trim <- function(x) {#
+	gsub("^\?gs+|\s+$", "", x, perl=TRUE)#
+}#
+woi <- function(x,y) {#
+	subset(y, word == x)	#
+}
+bigrams.sample <- bigrams[sample(nrow(bigrams),size=10), 1:ncol(bigrams)] # sample n = 100 from all rows in both columns
+bigrams$word <- trim(bigrams$word) # trim whitespace
+bigrams.sample$word <- trim(bigrams.sample$word)
+bigrams.sample
+bigrams[1:10]
+bigrams[1:10,]
+# words of interest
+## zillow word tag#
+#
+## functions#
+trim <- function(x) {#
+	gsub("^\?gs+|\s+$", "", x, perl=TRUE)#
+}#
+woi <- function(x,y) {#
+	subset(y, word == x)	#
+}#
+#
+## input data#
+# zillow unigrams by house id#
+setwd("/Users/dnoriega/Documents/Github/zillow_projects")#
+unigrams = read.table("data/zillow_uni_sample.txt", as.is = TRUE, sep = "\t")#
+unigrams <- unigrams[,c(1,3)] # subset dataframe `unigrams` all rows, columns 1 and 3  #
+names(unigrams) <- c("id","word") # rename data variable names#
+unigrams.sample <- unigrams[sample(nrow(unigrams),size=100), 1:ncol(unigrams)] # sample n = 100 from all rows in both columns#
+#
+# zillow bigrams by house id#
+setwd("/Users/dnoriega/Documents/Github/zillow_projects")#
+bigrams = read.table("data/zillow_bi_sample.txt", as.is = TRUE, sep = "\t")#
+bigrams <- bigrams[,c(1,3)] # subset dataframe `bigrams` all rows, columns 1 and 3  #
+names(bigrams) <- c("id","word") # rename data variable names#
+bigrams.sample <- bigrams[sample(nrow(bigrams),size=10), 1:ncol(bigrams)] # sample n = 100 from all rows in both columns#
+bigrams$word <- trim(bigrams$word) # trim whitespace #
+#
+# words of interest#
+words = read.table("data/zillow_words_of_interest.txt",sep="\n")#
+words <- c(t(as.matrix(words))) # combine a transpose of matrix column text data#
+#
+# create function that subsets data frame by matched words of interest (woi)#
+# find all households with words of interest#
+hhid <- data.frame() # initialize empty data frame #
+for(i in words) hhid = rbind(hhid,woi(i,unigrams)) # rowbind all subsets of words#
+for(i in words) hhid = rbind(hhid,woi(i,bigrams)) # rowbind all subsets of words
+hhid
+inputdata <- function(x,y) {#
+	x = read.table(y, as.is = TRUE, sep = "\t")#
+	x <- x[,c(1,3)] # subset dataframe x all rows, columns 1 and 3  #
+	names(x) <- c("id","word") # rename data variable names#
+	x.sample <- unigrams[sample(nrow(x),size=100), 1:ncol(x)] # sample n = 100 from all rows in both columns#
+}
+inputdata(unigrams,"data/zillow_uni_sample.txt")
+unigrams[1:10,1]
+unigrams[1:10,]
+clear
+?clear
+ls
+ls()
+x
+ls(clear)
+?ls
+## zillow word tag#
+setwd("/Users/dnoriega/Documents/Github/zillow_projects/data")#
+#
+## functions#
+trim <- function(x) {#
+	gsub("^\?gs+|\s+$", "", x, perl=TRUE)#
+}#
+woi <- function(x,y) {#
+	subset(y, word == x)	#
+}#
+#
+inputdata <- function(x,y) {#
+	x = read.table(y, as.is = TRUE, sep = "\t")#
+	x <- x[,c(1,3)] # subset dataframe x all rows, columns 1 and 3  #
+	names(x) <- c("id","word") # rename data variable names#
+	x.sample <- unigrams[sample(nrow(x),size=100), 1:ncol(x)] # sample n = 100 from all rows in both columns#
+	x$word <- trim(bigrams$word)#
+}#
+#
+# ## input data#
+# # zillow unigrams by house id#
+# setwd("/Users/dnoriega/Documents/Github/zillow_projects")#
+# unigrams = read.table("data/zillow_uni_sample.txt", as.is = TRUE, sep = "\t")#
+# unigrams <- unigrams[,c(1,3)] # subset dataframe `unigrams` all rows, columns 1 and 3  #
+# names(unigrams) <- c("id","word") # rename data variable names#
+# unigrams.sample <- unigrams[sample(nrow(unigrams),size=100), 1:ncol(unigrams)] # sample n = 100 from all rows in both columns#
+#
+# # zillow bigrams by house id#
+# setwd("/Users/dnoriega/Documents/Github/zillow_projects")#
+# bigrams = read.table("data/zillow_bi_sample.txt", as.is = TRUE, sep = "\t")#
+# bigrams <- bigrams[,c(1,3)] # subset dataframe `bigrams` all rows, columns 1 and 3  #
+# names(bigrams) <- c("id","word") # rename data variable names#
+# bigrams.sample <- bigrams[sample(nrow(bigrams),size=10), 1:ncol(bigrams)] # sample n = 100 from all rows in both columns#
+# bigrams$word <- trim(bigrams$word) # trim whitespace #
+inputdata(unigrams,"zillow_uni_sample.txt")#
+inputdata(bigrams,"zillow_bi_sample.txt")#
+# words of interest#
+words = read.table("data/zillow_words_of_interest.txt",sep="\n")#
+words <- c(t(as.matrix(words))) # combine a transpose of matrix column text data#
+#
+# create function that subsets data frame by matched words of interest (woi)#
+# find all households with words of interest#
+hhid <- data.frame() # initialize empty data frame #
+for(i in words) hhid = rbind(hhid,woi(i,unigrams)) # rowbind all subsets of words#
+for(i in words) hhid = rbind(hhid,woi(i,bigrams)) # rowbind all subsets of words
+inputdata <- function(y) {#
+	read.table(y, as.is = TRUE, sep = "\t")#
+	# x <- x[,c(1,3)] # subset dataframe x all rows, columns 1 and 3  #
+	# names(x) <- c("id","word") # rename data variable names#
+	# x.sample <- unigrams[sample(nrow(x),size=100), 1:ncol(x)] # sample n = 100 from all rows in both columns#
+	# x$word <- trim(bigrams$word)#
+}
+unigrams <- inputdata("zillow_uni_sample.txt")
+unigrams[1:10,]
+?return
+inputdata <- function(y) {#
+	x = read.table(y, as.is = TRUE, sep = "\t")#
+	x <- x[,c(1,3)] # subset dataframe x all rows, columns 1 and 3  #
+	names(x) <- c("id","word") # rename data variable names#
+	x.sample <- unigrams[sample(nrow(x),size=100), 1:ncol(x)] # sample n = 100 from all rows in both columns#
+	x$word <- trim(bigrams$word)#
+	return x#
+}
+## zillow word tag#
+setwd("/Users/dnoriega/Documents/Github/zillow_projects/data")#
+#
+## functions#
+trim <- function(x) {#
+	gsub("^\?gs+|\s+$", "", x, perl=TRUE)#
+}#
+woi <- function(x,y) {#
+	subset(y, word == x)	#
+}#
+#
+inputdata <- function(y) {#
+	x = read.table(y, as.is = TRUE, sep = "\t")#
+	x <- x[,c(1,3)] # subset dataframe x all rows, columns 1 and 3  #
+	names(x) <- c("id","word") # rename data variable names#
+	x.sample <- unigrams[sample(nrow(x),size=100), 1:ncol(x)] # sample n = 100 from all rows in both columns#
+	x$word <- trim(bigrams$word)#
+	return(x)#
+}
+## zillow word tag#
+setwd("/Users/dnoriega/Documents/Github/zillow_projects/data")#
+#
+## functions#
+trim <- function(x) {#
+	gsub("^\?gs+|\s+$", "", x, perl=TRUE)#
+}#
+woi <- function(x,y) {#
+	subset(y, word == x)	#
+}#
+#
+inputdata <- function(y) {#
+	x = read.table(y, as.is = TRUE, sep = "\t")#
+	x <- x[,c(1,3)] # subset dataframe x all rows, columns 1 and 3  #
+	names(x) <- c("id","word") # rename data variable names#
+	x.sample <- unigrams[sample(nrow(x),size=100), 1:ncol(x)] # sample n = 100 from all rows in both columns#
+	x$word <- trim(bigrams$word)#
+	return(x)#
+}#
+#
+# ## input data#
+# # zillow unigrams by house id#
+# setwd("/Users/dnoriega/Documents/Github/zillow_projects")#
+# unigrams = read.table("data/zillow_uni_sample.txt", as.is = TRUE, sep = "\t")#
+# unigrams <- unigrams[,c(1,3)] # subset dataframe `unigrams` all rows, columns 1 and 3  #
+# names(unigrams) <- c("id","word") # rename data variable names#
+# unigrams.sample <- unigrams[sample(nrow(unigrams),size=100), 1:ncol(unigrams)] # sample n = 100 from all rows in both columns#
+#
+# # zillow bigrams by house id#
+# setwd("/Users/dnoriega/Documents/Github/zillow_projects")#
+# bigrams = read.table("data/zillow_bi_sample.txt", as.is = TRUE, sep = "\t")#
+# bigrams <- bigrams[,c(1,3)] # subset dataframe `bigrams` all rows, columns 1 and 3  #
+# names(bigrams) <- c("id","word") # rename data variable names#
+# bigrams.sample <- bigrams[sample(nrow(bigrams),size=10), 1:ncol(bigrams)] # sample n = 100 from all rows in both columns#
+# bigrams$word <- trim(bigrams$word) # trim whitespace #
+unigrams <- inputdata("zillow_uni_sample.txt")#
+bigrams <- inputdata("zillow_bi_sample.txt")#
+# words of interest#
+words = read.table("data/zillow_words_of_interest.txt",sep="\n")#
+words <- c(t(as.matrix(words))) # combine a transpose of matrix column text data#
+#
+# create function that subsets data frame by matched words of interest (woi)#
+# find all households with words of interest#
+hhid <- data.frame() # initialize empty data frame #
+for(i in words) hhid = rbind(hhid,woi(i,unigrams)) # rowbind all subsets of words#
+for(i in words) hhid = rbind(hhid,woi(i,bigrams)) # rowbind all subsets of words
+## zillow word tag#
+setwd("/Users/dnoriega/Documents/Github/zillow_projects/data")#
+#
+## functions#
+trim <- function(x) {#
+	gsub("^\?gs+|\s+$", "", x, perl=TRUE)#
+}#
+woi <- function(x,y) {#
+	subset(y, word == x)	#
+}#
+#
+inputdata <- function(y) {#
+	x = read.table(y, as.is = TRUE, sep = "\t")#
+	x <- x[,c(1,3)] # subset dataframe x all rows, columns 1 and 3  #
+	names(x) <- c("id","word") # rename data variable names#
+	x.sample <- x[sample(nrow(x),size=100), 1:ncol(x)] # sample n = 100 from all rows in both columns#
+	x$word <- trim(x$word)#
+	return(x)#
+}#
+#
+# ## input data#
+# # zillow unigrams by house id#
+# setwd("/Users/dnoriega/Documents/Github/zillow_projects")#
+# unigrams = read.table("data/zillow_uni_sample.txt", as.is = TRUE, sep = "\t")#
+# unigrams <- unigrams[,c(1,3)] # subset dataframe `unigrams` all rows, columns 1 and 3  #
+# names(unigrams) <- c("id","word") # rename data variable names#
+# unigrams.sample <- unigrams[sample(nrow(unigrams),size=100), 1:ncol(unigrams)] # sample n = 100 from all rows in both columns#
+#
+# # zillow bigrams by house id#
+# setwd("/Users/dnoriega/Documents/Github/zillow_projects")#
+# bigrams = read.table("data/zillow_bi_sample.txt", as.is = TRUE, sep = "\t")#
+# bigrams <- bigrams[,c(1,3)] # subset dataframe `bigrams` all rows, columns 1 and 3  #
+# names(bigrams) <- c("id","word") # rename data variable names#
+# bigrams.sample <- bigrams[sample(nrow(bigrams),size=10), 1:ncol(bigrams)] # sample n = 100 from all rows in both columns#
+# bigrams$word <- trim(bigrams$word) # trim whitespace #
+unigrams <- inputdata("zillow_uni_sample.txt")#
+bigrams <- inputdata("zillow_bi_sample.txt")#
+# words of interest#
+words = read.table("data/zillow_words_of_interest.txt",sep="\n")#
+words <- c(t(as.matrix(words))) # combine a transpose of matrix column text data#
+#
+# create function that subsets data frame by matched words of interest (woi)#
+# find all households with words of interest#
+hhid <- data.frame() # initialize empty data frame #
+for(i in words) hhid = rbind(hhid,woi(i,unigrams)) # rowbind all subsets of words#
+for(i in words) hhid = rbind(hhid,woi(i,bigrams)) # rowbind all subsets of words
+## zillow word tag#
+setwd("/Users/dnoriega/Documents/Github/zillow_projects/data")#
+#
+## functions#
+woi <- function(x,y) {#
+	subset(y, word == x)	#
+}#
+#
+inputdata <- function(y) {#
+	trim <- function(z) {#
+		gsub("^\?gs+|\s+$", "", z, perl=TRUE)#
+	}#
+	x = read.table(y, as.is = TRUE, sep = "\t")#
+	x <- x[,c(1,3)] # subset dataframe x all rows, columns 1 and 3  #
+	names(x) <- c("id","word") # rename data variable names#
+	x.sample <- x[sample(nrow(x),size=100), 1:ncol(x)] # sample n = 100 from all rows in both columns#
+	x$word <- trim(x$word)#
+	return(x)#
+}#
+#
+# ## input data#
+# # zillow unigrams by house id#
+# setwd("/Users/dnoriega/Documents/Github/zillow_projects")#
+# unigrams = read.table("data/zillow_uni_sample.txt", as.is = TRUE, sep = "\t")#
+# unigrams <- unigrams[,c(1,3)] # subset dataframe `unigrams` all rows, columns 1 and 3  #
+# names(unigrams) <- c("id","word") # rename data variable names#
+# unigrams.sample <- unigrams[sample(nrow(unigrams),size=100), 1:ncol(unigrams)] # sample n = 100 from all rows in both columns#
+#
+# # zillow bigrams by house id#
+# setwd("/Users/dnoriega/Documents/Github/zillow_projects")#
+# bigrams = read.table("data/zillow_bi_sample.txt", as.is = TRUE, sep = "\t")#
+# bigrams <- bigrams[,c(1,3)] # subset dataframe `bigrams` all rows, columns 1 and 3  #
+# names(bigrams) <- c("id","word") # rename data variable names#
+# bigrams.sample <- bigrams[sample(nrow(bigrams),size=10), 1:ncol(bigrams)] # sample n = 100 from all rows in both columns#
+# bigrams$word <- trim(bigrams$word) # trim whitespace #
+unigrams <- inputdata("zillow_uni_sample.txt")#
+bigrams <- inputdata("zillow_bi_sample.txt")#
+# words of interest#
+words = read.table("data/zillow_words_of_interest.txt",sep="\n")#
+words <- c(t(as.matrix(words))) # combine a transpose of matrix column text data#
+#
+# create function that subsets data frame by matched words of interest (woi)#
+# find all households with words of interest#
+hhid <- data.frame() # initialize empty data frame #
+for(i in words) hhid = rbind(hhid,woi(i,unigrams)) # rowbind all subsets of words#
+for(i in words) hhid = rbind(hhid,woi(i,bigrams)) # rowbind all subsets of words
+ls
+ls()
+## functions#
+trim <- function(x) {#
+	gsub("^\?gs+|\s+$", "", x, perl=TRUE)#
+}#
+#
+woi <- function(x,y) {#
+	subset(y, word == x)	#
+}
+## zillow word tag#
+setwd("/Users/dnoriega/Documents/Github/zillow_projects/data")#
+#
+## functions#
+trim <- function(x) {#
+	gsub("^\s+|\s+$", "", x, perl=TRUE)#
+}#
+#
+woi <- function(x,y) {#
+	subset(y, word == x)	#
+}
+## zillow word tag#
+setwd("/Users/dnoriega/Documents/Github/zillow_projects/data")#
+#
+## functions#
+trim <- function(x) {#
+	gsub("^\\s+|\\s+$", "", x, perl=TRUE)#
+}
+## zillow word tag#
+setwd("/Users/dnoriega/Documents/Github/zillow_projects/data")#
+#
+## functions#
+trim <- function(x) {#
+	gsub("^\\s+|\\s+$", "", x, perl=TRUE)#
+}#
+#
+woi <- function(x,y) {#
+	subset(y, word == x)	#
+}
+ls()
+## zillow word tag#
+setwd("/Users/dnoriega/Documents/Github/zillow_projects/data")#
+#
+## functions#
+trim <- function(x) {#
+	gsub("^\\s+|\\s+$", "", x, perl=TRUE)#
+}#
+#
+woi <- function(x,y) {#
+	subset(y, word == x)	#
+}#
+#
+inputdata <- function(y) {#
+	x = read.table(y, as.is = TRUE, sep = "\t")#
+	x <- x[,c(1,3)] # subset dataframe x all rows, columns 1 and 3  #
+	names(x) <- c("id","word") # rename data variable names#
+	x.sample <- x[sample(nrow(x),size=100), 1:ncol(x)] # sample n = 100 from all rows in both columns#
+	x$word <- trim(x$word)#
+	return(x)#
+}
+ls()
+## zillow word tag#
+setwd("/Users/dnoriega/Documents/Github/zillow_projects/data")#
+#
+## functions#
+trim <- function(x) {#
+	gsub("^\\s+|\\s+$", "", x, perl=TRUE)#
+}#
+#
+woi <- function(x,y) {#
+	subset(y, word == x)	#
+}#
+#
+inputdata <- function(y) {#
+	x = read.table(y, as.is = TRUE, sep = "\t")#
+	x <- x[,c(1,3)] # subset dataframe x all rows, columns 1 and 3  #
+	names(x) <- c("id","word") # rename data variable names#
+	x.sample <- x[sample(nrow(x),size=100), 1:ncol(x)] # sample n = 100 from all rows in both columns#
+	x$word <- trim(x$word)#
+	return(x)#
+}#
+#
+# ## input data#
+# # zillow unigrams by house id#
+# setwd("/Users/dnoriega/Documents/Github/zillow_projects")#
+# unigrams = read.table("data/zillow_uni_sample.txt", as.is = TRUE, sep = "\t")#
+# unigrams <- unigrams[,c(1,3)] # subset dataframe `unigrams` all rows, columns 1 and 3  #
+# names(unigrams) <- c("id","word") # rename data variable names#
+# unigrams.sample <- unigrams[sample(nrow(unigrams),size=100), 1:ncol(unigrams)] # sample n = 100 from all rows in both columns#
+#
+# # zillow bigrams by house id#
+# setwd("/Users/dnoriega/Documents/Github/zillow_projects")#
+# bigrams = read.table("data/zillow_bi_sample.txt", as.is = TRUE, sep = "\t")#
+# bigrams <- bigrams[,c(1,3)] # subset dataframe `bigrams` all rows, columns 1 and 3  #
+# names(bigrams) <- c("id","word") # rename data variable names#
+# bigrams.sample <- bigrams[sample(nrow(bigrams),size=10), 1:ncol(bigrams)] # sample n = 100 from all rows in both columns#
+# bigrams$word <- trim(bigrams$word) # trim whitespace #
+unigrams <- inputdata("zillow_uni_sample.txt")#
+bigrams <- inputdata("zillow_bi_sample.txt")#
+# words of interest#
+words = read.table("data/zillow_words_of_interest.txt",sep="\n")#
+words <- c(t(as.matrix(words))) # combine a transpose of matrix column text data#
+#
+# create function that subsets data frame by matched words of interest (woi)#
+# find all households with words of interest#
+hhid <- data.frame() # initialize empty data frame #
+for(i in words) hhid = rbind(hhid,woi(i,unigrams)) # rowbind all subsets of words#
+for(i in words) hhid = rbind(hhid,woi(i,bigrams)) # rowbind all subsets of words
+# words of interest#
+words = read.table("zillow_words_of_interest.txt",sep="\n")#
+words <- c(t(as.matrix(words))) # combine a transpose of matrix column text data#
+#
+# create function that subsets data frame by matched words of interest (woi)#
+# find all households with words of interest#
+hhid <- data.frame() # initialize empty data frame #
+for(i in words) hhid = rbind(hhid,woi(i,unigrams)) # rowbind all subsets of words#
+for(i in words) hhid = rbind(hhid,woi(i,bigrams)) # rowbind all subsets of words
+hhid
+attributes(hhid)
+hhid <- hhid$id
+hhid
+hhid[1:10,]
+hhid[1:10]
+hhid[1]
+hhid[3]
+tail(hhid)
+?unique
+duplicated(hhid)
+unique(hhid)
+sort(hhid)
+duplicated(sort(hhid))
+# find all households with words of interest#
+hhid <- data.frame() # initialize empty data frame #
+for(i in words) hhid = rbind(hhid,woi(i,unigrams)) # rowbind all subsets of words#
+for(i in words) hhid = rbind(hhid,woi(i,bigrams)) # rowbind all subsets of words#
+#
+hhid <- unique(sort(hhid$id))
+hhid
+duplicated(hhid)
+length(hhid)
+hhid[1:10,]
+hhid[1:10]
+subset(unigrams, id = hhid)
+?read.csv
+corpus = read.csv("/Users/dnoriega/Dropbox/SolarHedonic/Dan/text analysis/atype76.csv", header = TRUE)
+corpus[1:10,]
+tail(corpus)
+length(corpus)
+dim(corpus)
+names(corpus)
+corpus$pid[1]
+corpus[1:10,]
+corpus.sample <- x[sample(nrow(corpus),size=100), 1:ncol(corpus)] # sample n = 100 from all rows in both columns
+corpus.sample <- corpus[sample(nrow(corpus),size=10000), 1:ncol(corpus)] # sample n = 100 from all rows in both columns
+corpus.sample
+?sort
+corpus.sample <- order(corpus.sample$pid)
+corpus.sample[1:10,]
+corpus.sample[1:10]
+?do.call
+do.call(order,corpus.sample)
+corpus.sample <- corpus[sample(nrow(corpus),size=10000), 1:ncol(corpus)] # sample n = 100 from all rows in both columns
+corpus.sample[order(pid)]
+corpus.sample[do.call(order,corpus.sample),]
+?do.call
+corpus.sample <- corpus.sample[do.call(order, corpus.sample), ] # order data frame by first column (pid)
+head(corpus.sample)
+corpus.sample[1]
+corpus.sample[1,]
+dim(corpus.sample)
+dim(corpus.sample)[1]
+corpus.sample <- corpus[sample(nrow(corpus),size=10000), 1:ncol(corpus)] # sample n = 100 from all rows in both columns#
+corpus.sample <- data.frame(corpus.sample[do.call(order, corpus.sample), ], row.names = seq_along(1:dim(corpus.sample)[1]) # order data frame by first column (pid)
+)
+head(corpus.sample)
+hhid
+corpus.subset <- subset(corpus.sample, corpus$pid == hhid)
+corpus.subset <- subset(corpus, corpus$pid == hhid)
+corpus.subset <- subset(corpus, corpus$pid = hhid)
+corpus.subset <- subset(corpus.sample, corpus$pid == 2146944214)
+corpus.subset
+corpus.sample[1:10,]
+corpus.subset <- subset(corpus.sample, corpus$pid == 4492)
+corpus.subset
+corpus.subset <- subset(corpus.sample, corpus.sample$pid == 4492)
+corpus.subset
+corpus.subset <- subset(corpus.sample, corpus.sample$pid == hhid)
+hhid
+c(hhid)
+corpus.sample[corpus.sample$pid == hhid]
+corpus.subset <- subset(corpus.sample, pid == hhid)
+corpus.subset <- subset(corpus.sample, pid = hhid)
+corpus.subse
+corpus.subset
+1
+hhid.match <- corpus[pid = hhid]
+hhid.match <- subset(corpus, pid = hhid)
+head(hhid.match)
+head(hhid)
+pid = hhid
+x <- c(pid = hhid)
+x
+x[1]
+x2
+x[2]
+dim(x)
+attributes(x)
+class(x)
+mode(x)
+sapply(x)
+sapply(x,mode)
+hhid.match[1:10]
+hhid.match[1:10,]
+dim(hhid.match)
+cbind(pid = hhid)
+pid
+c(corpus$pid = hhid)
+c(corpus$pid == hhid)
+ls()
+ddjdjdjdk

@@ -10,7 +10,7 @@ os.chdir("D:/Dan's Workspace/GitHub Repository/zillow_projects/data")
 ngrams("D:/Dan's Workspace/Zillow/data/atype76.csv", 'zillow',1,20000)
 
 # construct ngrams from green homes listings
-ngrams("green_homes_list.csv",'green',1)
+ngrams("green_homes_list.csv",'green',0)
 
 # construct ngrams from full set
 os.chdir("D:/Dan's Workspace/Zillow/data/") # change the directory for large files
