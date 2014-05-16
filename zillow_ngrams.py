@@ -14,7 +14,6 @@ from remove_html import strip_tags
 
 
 
-
 # define
 def ngrams(infile, outprefix, sample=0, n=20000):
     
@@ -52,6 +51,9 @@ def ngrams(infile, outprefix, sample=0, n=20000):
         return text
     
     
+	## set seed
+	random.seed(1789)
+
     ## create a tag for samples
     if sample == 1:
         samp_tag = "_sample"

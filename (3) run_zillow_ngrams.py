@@ -12,7 +12,10 @@ ngrams("D:/Dan's Workspace/Zillow/data/atype76.csv", 'zillow',1,20000)
 # construct ngrams from green homes listings
 ngrams("green_homes_list.csv",'green',0)
 
-# construct ngrams from full set
+# construct ngrams from full set and save small sample sets as well
 os.chdir("D:/Dan's Workspace/Zillow/data/") # change the directory for large files
 ngrams("atype76.csv", 'zillow',0)
+ngrams("D:/Dan's Workspace/Zillow/data/atype76.csv", 'zillow',1,20000)
+ngrams("green_homes_list.csv",'green',0)
+
 
