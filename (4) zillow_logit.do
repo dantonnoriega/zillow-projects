@@ -102,7 +102,7 @@ save `temp', replace
 collapse (sum) count, by(ngram)
 /*
 * create trimming loop
-while `r(p10)' - `r(p1)' < 5 {
+while `r(p10)' - `r(p1)' < 5 {ddply
 	sum count, detail
 	drop if count <= `r(p1)'
 	}
