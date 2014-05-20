@@ -1,12 +1,10 @@
 ## zillow word tag
+library(data.table)
 
 start.time <- proc.time()
 
 #setwd("/Users/dnoriega/Documents/Github/zillow_projects/data") # mac
 setwd("D:/Dan's Workspace/Zillow/data") # pc
-
-## set up multicore usage
-registerDoMC(detectCores())
 
 ## functions
 # trim leading and trailing whitespace
@@ -16,47 +14,73 @@ trim <- function(x) {
 
 # input table
 inputdata <- function(y) {
-	x = read.table(y, as.is = TRUE, sep = "\t")
+	x <- big.read(y)
 	x <- x[,c(1,3)] # subset dataframe x all rows, columns 1 and 3  
-	names(x) <- c("id","word") # rename data variable names
-	x.sample <- x[sample(nrow(x),size=100), 1:ncol(x)] # sample n = 100 from all rows in both columns
-	x$word <- trim(x$word) # trim whitespace from words
+	names(x) <- c("id","ngram") # rename data variable names
+	x$ngram <- trim(x$ngram) # trim whitespace from words
 	return(x)
 }
 
-## input data
-# get corpus (all hhids and decriptions)
-#corpus <- read.csv("/Users/dnoriega/Dropbox/SolarHedonic/Dan/text analysis/atype76.csv", header = TRUE)
-corpus <- read.csv("atype76.csv", header = TRUE)
-corpus.sample <- corpus[sample(nrow(corpus),size=10000), 1:ncol(corpus)] # sample n = 100 from all rows in both columns
-corpus.sample <- data.frame(corpus.sample[do.call(order, corpus.sample), ], row.names = seq_along(1:dim(corpus.sample)[1])) # order data frame by first column (pid)
+big.read <- function(x) {
+    tabnrows <- read.table(x, sep ="\t", as.is = TRUE, nrows = 3)
+    classes <- sapply(tabnrows, class)
+    tabAll <-  read.table(x, sep ="\t", as.is = TRUE, colClasses = classes, comment.char = "")
+    return(tabAll)
+}
 
-# get ngram data
-unigrams <- inputdata("zillow_uni.txt")
-bigrams <- inputdata("zillow_bi.txt")
- 
-# words of interest
-words = read.table("zillow_words_of_interest.txt",sep="\n")
-words <- c(t(as.matrix(words))) # combine a transpose of matrix column text data
+## input data
+## get corpus (all hhids and decriptions)
+system.time(corpus <- read.csv("atype76.csv", header = TRUE, 
+	colClasses = c("integer","character"), comment.char="", nrows = 1608699))
+corpus$avalue <- trim(corpus$avalue)
+corpus <- data.table(corpus)
+
+system.time(zillow.fd <- big.read("zillow_bi_fd.txt"))
+names(zillow.fd) <- c("ngram","total")
+zillow.fd$ngram <- trim(zillow.fd$ngram)
+
+
+## get ngram data
+system.time(bigrams <- inputdata("zillow_bi.txt"))
+
+## create data tables
+zillow.fd <- data.table(zillow.fd, key = "ngram")
+bigrams <- data.table(bigrams, key = "ngram")
+
+## merge and shrink
+system.time( m.data <- merge(bigrams, zillow.fd, by = "ngram")) # merge both data sets
+m.data <- m.data[order(-m.data$total), ] # order the data by total
+bigrams <- subset(m.data, total < 50000 & total > 10 ) # update bigrams; remove the subset of data with very high counts
+
+# take split word list `strsplit(bigrams$ngram, "\\s")`
+#	 unlist then convert to matrix of 2 cols, then to data frame
+bi.split = data.frame(matrix(unlist(strsplit(bigrams$ngram, "\\s")), ncol = 2, byrow = T), 
+	stringsAsFactors = FALSE )
+names(bi.split) <- c("b1","b2")
+attach(bi.split)
+
+## words of interest
+words <- read.table("zillow_words_of_interest.txt",sep="\n",as.is = TRUE)
+words <- c(as.matrix(words))
 
 ## find all households with words of interest then remove duplicates hhids and match hhids to corpus
-hhid <- data.frame() # initialize empty data frame 
+words.match <- rbind(bigrams[which(b1 %in% words), ], bigrams[which(b2 %in% words), ], bigrams[ bigrams$ngram %in% words, ])
+hhid <- unique(sort(words.match$id)) # remove duplicate hhids and sort
+woi <- unique(words.match$ngram) # removed duplicate bigrams and sort
+woi <- sort(woi)
 
-hhid1 <- subset(unigrams, match(unigrams$word,words,nomatch=0) > 0) # match unigrams
-hhid2 <- subset(bigrams, match(bigrams$word,words,nomatch=0) > 0) # match bigrams
-hhid <- rbind(hhid1,hhid2) # stack matched data sets
-hhid <- unique(sort(hhid$id)) # remove duplicates and sort
+## output bigrams of interest
+write.csv(woi,"zillow_bigrams_list.csv", row.names = FALSE, quote = FALSE)
+write.csv(woi,"C:/Users/dng/Dropbox/SolarHedonic/Dan/zillow_bigrams_list.csv", row.names = FALSE, quote = FALSE)
 
 ## match hhids to corpus, extract descriptions
-hhid.match <- data.frame() # initialize empty data frame
 stime <- proc.time()
-hhid.match <- subset(corpus, match(corpus$pid,hhid,nomatch=0) > 0)
+hhid.match <- corpus[ corpus$pid %in% hhid , ] 
 stime <- proc.time() - stime
 print(stime)
 
-
-write.csv(hhid.match,"zillow_word_tag.csv", row.names = FALSE)
-write.csv(hhid.match,"D:/Dan's Workspace/Zillow/spreadsheets/zillow_word_tag.csv", row.names = FALSE)
+write.csv(hhid.match,"zillow_bigrams_tag.csv", row.names = FALSE, quote = FALSE)
+write.csv(hhid.match,"C:/Users/dng/Dropbox/SolarHedonic/Dan/zillow_bigrams_tag.csv", row.names = FALSE, quote = FALSE)
 
 start.time <- proc.time() - start.time
 print(start.time)
