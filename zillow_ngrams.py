@@ -16,17 +16,16 @@ from remove_html import strip_tags
 
 # define
 def ngrams(infile, outprefix, sample=0, n=20000):
-    
-    
+
     # periods (to save abbrevs)
-    period = re.compile(r'(?<=\s)(\w\.)+')
+    period = re.compile(r'(\s)+(\w\.)+')
     # all non alphanumeric
     symbols = re.compile(r'(\W+)', re.U)
     # pure numeric and numeric/alpha combos
     numeric = re.compile(r'(\d+|\w+\d+|\d+\w+|\d+\w+\d+|\w+\d+\w+)(\s)', re.I|re.U)
     # separators (any whitespace)
     seps = re.compile(r'\s+')
-    # lone non digit numbers
+    # lone non digit numbers in mid line
     lone = re.compile(r'(?<=\s)(\D)(?=\s)', re.I|re.U)
     # get stopwords
     stops = set(nltk.corpus.stopwords.words("english"))
@@ -51,8 +50,8 @@ def ngrams(infile, outprefix, sample=0, n=20000):
         return text
     
     
-	## set seed
-	random.seed(1789)
+    ## set seed
+    random.seed(1789)
 
     ## create a tag for samples
     if sample == 1:
@@ -116,7 +115,7 @@ def ngrams(infile, outprefix, sample=0, n=20000):
             tkns = [replace_spanish(w) for w in tkns]
             tkns = [stemmer.stem(w) for w in tkns]
                        
-        doc = nltk.Text(tkns)
+        doc = nltk.Text(tkns) # construct the whole doc
         bigrams = nltk.bigrams(doc) # find bigrams
         trigrams = nltk.trigrams(doc)	# find trigrams
         

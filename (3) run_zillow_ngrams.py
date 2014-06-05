@@ -17,5 +17,3 @@ os.chdir("D:/Dan's Workspace/Zillow/data/") # change the directory for large fil
 ngrams("atype76.csv", 'zillow',0)
 ngrams("D:/Dan's Workspace/Zillow/data/atype76.csv", 'zillow',1,20000)
 ngrams("green_homes_list.csv",'green',0)
-
-
