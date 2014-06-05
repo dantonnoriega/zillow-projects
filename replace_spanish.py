@@ -42,7 +42,7 @@ def replace_spanish(string):
     u'\xfa':u'u',
     u'\xfb':u'u',
     u'\xfc':u'u',
-    u'\xe5':u'a'
+    u'\xe5':u'a',
     }
     new_string = string
     for c in d.keys():

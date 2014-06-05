@@ -94,6 +94,7 @@ def ngrams(infile, outprefix, sample=0, n=20000):
     i = 0 # initialize i
     for line in text:
         txt = clean(line)
+        txt = txt.encode('ascii','ignore')
         language = detect_language(txt)
         
         if language != 'english':
@@ -114,8 +115,17 @@ def ngrams(infile, outprefix, sample=0, n=20000):
             tkns = [w for w in tkns if not w in stops]
             tkns = [replace_spanish(w) for w in tkns]
             tkns = [stemmer.stem(w) for w in tkns]
-                       
-        doc = nltk.Text(tkns) # construct the whole doc
+            
+        ''' 
+        
+        [w.encode('ascii','ignore') for w in tkns]
+        
+        CRUCIAL LINE:
+            .encode('ascii', 'ignore') makes python IGNORE any ascii errors for printing
+        
+        '''
+        
+        doc = nltk.Text([w.encode('ascii','ignore') for w in tkns]) # construct the whole doc
         bigrams = nltk.bigrams(doc) # find bigrams
         trigrams = nltk.trigrams(doc)	# find trigrams
         
