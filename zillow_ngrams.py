@@ -91,10 +91,11 @@ def ngrams(infile, outprefix, sample=0, n=20000):
     
     
     # create output file of tokens by household (aka by row/obs) and make corpus
-    #CRUCIAL LINE: .encode('ascii', 'ignore') makes python IGNORE any ascii errors for printing
+    # CRUCIAL LINE: .encode('ascii', 'ignore') makes python IGNORE any ascii errors for printing
     i = 0 # initialize i
     for line in text:
         txt = clean(line)
+        txt = txt.encode('ascii','ignore') 
         language = detect_language(txt)
         
         # ORDER MATTERS
@@ -104,20 +105,17 @@ def ngrams(infile, outprefix, sample=0, n=20000):
             tkns = [w for w in txt.split() if len(w) > 2 ] # only > 2 letter words 
             tkns = [w for w in tkns if not w in stops]
             tkns = [replace_spanish(w) for w in tkns]
-            tkns = [w.encode('ascii','ignore') for w in tkns] 
             tkns = [stemmer.stem(w) for w in tkns]
         if language == 'spanish':
             tkns = [w for w in txt.split() if len(w) > 2 ] # only > 2 letter words
             tkns = [w for w in tkns if not w in spanish_stops]
             tkns = [replace_spanish(w) for w in tkns]
-            tkns = [w.encode('ascii','ignore') for w in tkns] 
             tkns = [stemmer.stem(w) for w in tkns]
         if language == 'bilingual':
             tkns = [w for w in txt.split() if len(w) > 2 ] # only > 2 letter words
             tkns = [w for w in tkns if not w in spanish_stops]
             tkns = [w for w in tkns if not w in stops]
             tkns = [replace_spanish(w) for w in tkns]
-            tkns = [w.encode('ascii','ignore') for w in tkns] 
             tkns = [stemmer.stem(w) for w in tkns]
               
         doc = nltk.Text(tkns) # construct the whole doc
