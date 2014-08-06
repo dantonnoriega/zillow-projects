@@ -24,36 +24,46 @@ start.timer <- proc.time()
 ## import data
 system.time( zillow.data <- big.read("zillow_bi.txt"))
 system.time( CAgreen.data <- big.read("green_bi.txt"))
+zillow.data <- zillow.data[,c(-2,-5)]
+CAgreen.data <- CAgreen.data[,c(-2,-5)]
 
 ## create new variables
 zillow.data$green <- as.vector(0)
 CAgreen.data$green <- as.vector(1)
-s.data <-rbind(zillow.data[,c(-2,-5)], CAgreen.data[,c(-2,-5)]) # s for `stacked`
 
 ## add names
-names(s.data) <- unlist(strsplit("pid ngram count green", split = " "))
+names(zillow.data) <- unlist(strsplit("pid ngram count green", split = " "))
+names(CAgreen.data) <- unlist(strsplit("pid ngram count green", split = " "))
+
 
 ## get the frequency distribution
 system.time(zillow.fd <- big.read("zillow_bi_fd.txt"))
 names(zillow.fd) <- c("ngram","total")
 
 ## trim and create factors
-s.data$ngram <- trim(s.data$ngram)
+zillow.data$ngram <- trim(zillow.data$ngram)
+CAgreen.data$ngram <- trim(CAgreen.data$ngram)
 zillow.fd$ngram <- trim(zillow.fd$ngram)
 
+
 ## create data tables
-dt.z <- data.table(zillow.fd, key = "ngram")
-dt.s <- data.table(s.data, key = "ngram")
+dt.c <- data.table(CAgreen.data, key = "ngram")
+dt.z.fd <- data.table(zillow.fd, key = "ngram")
+dt.z <- data.table(zillow.data, key = "ngram")
+
+## merge and shrink
+system.time( m.data <- merge(dt.z, dt.z.fd, by = "ngram")) # merge both data sets
+m.data <- m.data[order(-m.data$total), ] # order the data by total
+m.sub <- subset(m.data, total < 50000 & total > 10) # remove the subset of data with very high counts
+m.sub <- m.sub[ , total:=NULL]
+m.sub <- rbind(dt.c, m.sub, use.names = TRUE) # stack zillow bi with CA bi
+m.sub$ngram <- as.factor(m.sub$ngram) # needed for matrix.model
 
 ## at unique identifier
 # from http://stackoverflow.com/questions/13566562/creating-an-unique-id-in-r
-dt.s <- transform(dt.s, i = as.numeric(interaction(dt.s$pid, dt.s$green, drop = TRUE))) 
+m.sub <- transform(m.sub, i = as.numeric(interaction(dt.s$pid, dt.s$green, drop = TRUE))) 
 
-## merge and shrink
-system.time( m.data <- merge(dt.s, dt.z, by = "ngram")) # merge both data sets
-m.data <- m.data[order(-m.data$total), ] # order the data by total
-m.sub <- subset(m.data, total < 50000 & total > 10 ) # remove the subset of data with very high counts
-m.sub$ngram <- as.factor(m.sub$ngram) # needed for matrix.model
+## sort data
 m.sort <- m.sub[order(m.sub$i), ] # sort by hhid
 m.sort <- m.sort[rep(1:nrow(m.sort), m.sort$count), ] # expand by counts then remove counts
 m.sort <- m.sort[ , count:=NULL]
@@ -63,6 +73,7 @@ x <- xtabs(~ i + ngram, m.sort, sparse = TRUE) # get sparse matrix for data
 y <- m.sub[ , list(green = max(green)), by = i]
 y <- y[order(y$i), ]
 y <- y[, i:=NULL]
+y <- y[,2]
 y <- as.matrix(y)
 
 ## run parallel glm model (option `parallel = TRUE`)

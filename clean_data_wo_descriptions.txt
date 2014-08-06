@@ -1,0 +1,5 @@
+:set nu
+:%s/\s\+\"\\\"\s\+/\tNA\t/g
+:%s/\\\"//g # delete all \"
+:cd /cygdrive/d/Dan's Workspace/Zillow/data # set cd new directory
+:sav data_wo_descriptions2.txt

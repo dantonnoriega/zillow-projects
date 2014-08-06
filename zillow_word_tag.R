@@ -29,7 +29,7 @@ big.read <- function(x) {
 }
 
 ## input data
-## get corpus (all hhids and decriptions)
+## get corpus (all hhids and descriptions)
 system.time(corpus <- read.csv("atype76.csv", header = TRUE, 
 	colClasses = c("integer","character"), comment.char="", nrows = 1608699))
 corpus$avalue <- trim(corpus$avalue)

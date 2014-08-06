@@ -20,8 +20,8 @@ stime <- proc.time()
 
 ## import unigram and bigrams by household
 #setwd("/home/dn95/research/zillow/data") # unix cluster
-setwd("/Volumes/UNTITLED/") # unix cluster
-files <- c("zillow_bi.txt","zillow_uni.txt") # unix cluster
+setwd("/Volumes/UNTITLED/") # flash drive
+files <- c("zillow_bi.txt","zillow_uni.txt")
 #setwd("/Users/dnoriega/Dropbox/SolarHedonic/text analysis/data")
 #files <- c("zillow_bi_sample.txt","zillow_uni_sample.txt")
 f <- lapply(files, big.read)
