@@ -1,5 +1,10 @@
+:echo 'this file cleans data_wo_descriptions.txt from "\" and \" using vim'
+:echo 'to run, type the following:'
+:echo '$ vim -s "D:\Dan's Workspace\GitHub Repository\zillow_projects\clean_data_wo_descriptions.txt" "D:\Dan's Workspace\Zillow\raw_data\data_wo_descriptions.txt" '
+:echo 'this file removes all instances of "\" and then all instances of \"'
 :set nu
 :%s/\s\+\"\\\"\s\+/\tNA\t/g
-:%s/\\\"//g # delete all \"
-:cd /cygdrive/d/Dan's Workspace/Zillow/data # set cd new directory
-:sav data_wo_descriptions2.txt
+:%s/\\\"//g
+:cd /cygdrive/d/Dan's Workspace/Zillow/data
+:sav! data_wo_descriptions2.txt
+:q!
